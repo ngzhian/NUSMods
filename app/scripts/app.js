@@ -121,10 +121,11 @@ App.on('start', function () {
   // navigation menu modules
   require('./timetable');
   require('./modules');
-  require('./venues');
-  // require('./friends');
+  require('./friends');
+  require('./venues'); 
   require('./nuswhispers');
   require('./news');
+  require('./apps');
   require('./preferences');
   require('./apps');
   require('./blog');
