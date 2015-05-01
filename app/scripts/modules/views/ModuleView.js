@@ -8,6 +8,7 @@ var GoToTopBehavior = require('../../common/behaviors/GoToTopBehavior');
 var ModuleHoverBehavior = require('../../common/behaviors/ModuleHoverBehavior');
 var Marionette = require('backbone.marionette');
 var PrerequisitesTreeView = require('./PrerequisitesTreeView');
+var ProjectsListView = require('./ProjectsListView');
 var _ = require('underscore');
 var analytics = require('../../analytics');
 var localforage = require('localforage');
@@ -34,7 +35,8 @@ module.exports = Marionette.LayoutView.extend({
   },
   regions: {
     biddingStatsRegion: '#bidding-stats',
-    prerequisitesTreeRegion: '.nm-prerequisites-tree'
+    prerequisitesTreeRegion: '.nm-prerequisites-tree',
+    projectsRegion: '.nm-module-projects-list-container'
   },
   initialize: function () {
     if (!window.location.hash) {
@@ -189,6 +191,19 @@ module.exports = Marionette.LayoutView.extend({
 
     // Index 0 is "All", therefore index no. = sem no.
     $('.js-nm-ls-schedule-tabs a[data-target="#nm-ls-schedule-sem' + config.semester + '"]').tab('show');
+
+    var PROJECTS_LIST_URL = 'http://localhost:8000/' + this.model.get('module').ModuleCode + '.json';
+
+    $.ajax({
+      type: 'GET',
+      contentType: 'application/json',
+      url: PROJECTS_LIST_URL,
+      dataType: 'jsonp',
+      jsonpCallback: 'callback',
+      success: function (data) {
+        that.showProjectsRegion(data);
+      }
+    });
   },
   updatePreferences: function ($ev) {
     var $target = $($ev.target);
@@ -201,7 +216,13 @@ module.exports = Marionette.LayoutView.extend({
       this.showBiddingStatsRegion(true);
     }
   },
-  showBiddingStatsRegion: function () {
+  showProjectsRegion: function (data) {
+    var projectsListView = new ProjectsListView({
+      collection: new Backbone.Collection(data)
+    });
+    this.projectsRegion.show(projectsListView);
+  },
+  showBiddingStatsRegion: function (displayFiltered) {
     var biddingStatsDeepCopy = $.extend(true, {},
       this.model.attributes.module.FormattedCorsBiddingStats);
     var biddingStatsModel = new Backbone.Model({stats: biddingStatsDeepCopy});

@@ -953,6 +953,16 @@ colgroup.hover {
   }
 }
 
+.nm-module-projects-list {
+  .nm-module-project-team {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
+
 // Friends
 .nm-friends-list {
   padding: 0;
