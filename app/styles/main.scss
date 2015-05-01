@@ -954,6 +954,13 @@ colgroup.hover {
 }
 
 .nm-module-projects-list {
+  .nm-module-projects-list-item {
+    margin-bottom: 20px;
+  }
+  .nm-module-project-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
   .nm-module-project-team {
     display: block;
     overflow: hidden;
