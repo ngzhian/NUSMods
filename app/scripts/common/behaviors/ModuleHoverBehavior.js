@@ -6,8 +6,8 @@ var Marionette = require('backbone.marionette');
 
 module.exports = Marionette.Behavior.extend({
   events: {
-    'mouseenter a[href^=\'/modules/\']' : 'showDetails',
-    'click a[href^=\'/modules/\']': 'destroyDetails'
+    'mouseenter a[href^="/modules/"]:not([href*="projects"])' : 'showDetails',
+    'click a[href^="/modules/"]:not([href*="projects"])': 'destroyDetails'
   },
 
   showDetails: function (event) {

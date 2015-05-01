@@ -7,13 +7,15 @@ var BiddingStatsView = require('./BiddingStatsView');
 var GoToTopBehavior = require('../../common/behaviors/GoToTopBehavior');
 var ModuleHoverBehavior = require('../../common/behaviors/ModuleHoverBehavior');
 var Marionette = require('backbone.marionette');
+var NUSMods = require('../../nusmods');
 var PrerequisitesTreeView = require('./PrerequisitesTreeView');
-var ProjectsListView = require('./ProjectsListView');
+var ProjectsGalleryView = require('./ProjectsGalleryView');
 var _ = require('underscore');
 var analytics = require('../../analytics');
 var localforage = require('localforage');
 var template = require('../templates/module.hbs');
 var config = require('../../common/config');
+
 require('bootstrap/scrollspy');
 require('bootstrap/affix');
 require('bootstrap/tab');
@@ -36,7 +38,7 @@ module.exports = Marionette.LayoutView.extend({
   regions: {
     biddingStatsRegion: '#bidding-stats',
     prerequisitesTreeRegion: '.nm-prerequisites-tree',
-    projectsRegion: '.nm-module-projects-list-container'
+    projectsRegion: '.nm-module-projects-gallery-container'
   },
   initialize: function () {
     if (!window.location.hash) {
@@ -194,15 +196,8 @@ module.exports = Marionette.LayoutView.extend({
 
     var PROJECTS_LIST_URL = 'http://localhost:8000/' + this.model.get('module').ModuleCode + '.json';
 
-    $.ajax({
-      type: 'GET',
-      contentType: 'application/json',
-      url: PROJECTS_LIST_URL,
-      dataType: 'jsonp',
-      jsonpCallback: 'callback',
-      success: function (data) {
-        that.showProjectsRegion(data);
-      }
+    NUSMods.getModuleProjects(this.model.get('module').ModuleCode, function (data) {
+      that.showProjectsRegion(data);
     });
   },
   updatePreferences: function ($ev) {
@@ -217,10 +212,10 @@ module.exports = Marionette.LayoutView.extend({
     }
   },
   showProjectsRegion: function (data) {
-    var projectsListView = new ProjectsListView({
+    var projectsGalleryView = new ProjectsGalleryView({
       collection: new Backbone.Collection(data)
     });
-    this.projectsRegion.show(projectsListView);
+    this.projectsRegion.show(projectsGalleryView);
   },
   showBiddingStatsRegion: function (displayFiltered) {
     var biddingStatsDeepCopy = $.extend(true, {},

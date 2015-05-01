@@ -1,0 +1,15 @@
+<div class="nm-module-projects-list-item">
+  <a href="/modules/{{modCode}}/projects/{{slug}}">
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{{thumbnail}}" class="img-responsive">
+      </div>
+      <div class="col-md-8">
+        <h5 class="nm-module-project-list-title">{{title}}</h5>
+        {{#if members}}
+          <small class="nm-module-project-list-team">By {{#each members}} {{this}}{{#unless @last}},{{/unless}} {{/each}}</small>
+        {{/if}}
+      </div>
+    </div>
+  </a>
+</div>

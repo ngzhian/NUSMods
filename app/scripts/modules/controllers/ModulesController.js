@@ -1,7 +1,9 @@
 'use strict';
 
 var App = require('../../app');
+var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
+var ProjectView = require('../views/ProjectView');
 
 var navigationItem = App.request('addNavigationItem', {
   name: 'Modules',
@@ -10,7 +12,7 @@ var navigationItem = App.request('addNavigationItem', {
 });
 
 module.exports = Marionette.Controller.extend({
-  showModules: function (id) {
+  showModules: function (id, projectSlug) {
     var ModulesView = require('../views/ModulesView');
     var ModuleView = require('../views/ModuleView');
     var NUSMods = require('../../nusmods');
@@ -21,6 +23,16 @@ module.exports = Marionette.Controller.extend({
     if (!id) {
       NUSMods.getMods().then(function (mods) {
         App.mainRegion.show(new ModulesView({mods: mods}));
+      });
+    } else if (projectSlug) {
+      var modCode = id.toUpperCase();
+      NUSMods.getMods(modCode).then(function (data) {
+        App.mainRegion.show(new ProjectView({
+          model: new Backbone.Model({
+            modCode: modCode,
+            projectSlug: projectSlug
+          })
+        }));
       });
     } else {
       var modCode = id.toUpperCase();

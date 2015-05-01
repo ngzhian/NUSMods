@@ -28,17 +28,15 @@ module.exports = {
         };
     },
      
-    createVideo: function (url, width, height) {
-        // Returns an iframe of the video with the specified URL.
+    getVideoEmbedUrl: function (url, width, height) {
+        // Returns a video URL.
         var videoObj = this.parseVideo(url);
-        var $iframe = $('<iframe>', { width: width, height: height });
-        $iframe.attr('frameborder', 0);
+
         if (videoObj.type == 'youtube') {
-            $iframe.attr('src', '//www.youtube.com/embed/' + videoObj.id);
+            return '//www.youtube.com/embed/' + videoObj.id;
         } else if (videoObj.type == 'vimeo') {
-            $iframe.attr('src', '//player.vimeo.com/video/' + videoObj.id);
+            return '//player.vimeo.com/video/' + videoObj.id;
         }
-        return $iframe;
     },
      
     getVideoThumbnail: function (url, cb) {

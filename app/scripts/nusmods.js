@@ -2,12 +2,15 @@
 
 var $ = require('jquery');
 var Promise = require('bluebird'); // jshint ignore:line
+var slugify = require('./common/utils/slugify.js');
 
 var ayBaseUrl;
-var moduleInformationPromise, moduleListPromise;
+var moduleInformationPromise;
+var moduleListPromise;
 var timetablePromise;
 var venuesPromise, venueInformationPromise;
 var moduleCodes = {};
+var moduleProjects = {};
 
 module.exports = {
   getAllModules: function () {
@@ -64,5 +67,29 @@ module.exports = {
   },
   setConfig: function (config) {
     ayBaseUrl = config.baseUrl + config.academicYear.replace('/', '-') + '/';
+  },
+  getModuleProjects: function (code, callback) {
+    var PROJECTS_LIST_URL = 'http://localhost:8000/' + code + '.json';
+
+    if (moduleProjects[code]) {
+      callback(moduleProjects[code]);
+    } else {
+      $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        url: PROJECTS_LIST_URL,
+        dataType: 'jsonp',
+        jsonpCallback: 'callback',
+        success: function (data) {
+          // Inject module code into each project object
+          data.forEach(function (item) {
+            item.modCode = code;
+            item.slug = slugify(item.title);
+          });
+          moduleProjects[code] = data;
+          callback(data);
+        }
+      });
+    }
   }
 };

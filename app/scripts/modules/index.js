@@ -8,7 +8,7 @@ App.addInitializer(function () {
   new Marionette.AppRouter({
     controller: new ModulesController(),
     appRoutes: {
-      'modules(/:id)(/:section)': 'showModules'
+      'modules(/:id)(/projects/:projectSlug)': 'showModules'
     }
   });
 });

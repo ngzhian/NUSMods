@@ -1,7 +1,7 @@
-<div class="nm-module-projects-list-item">
-  <a target="_blank">
+<div class="nm-module-projects-gallery-item">
+  <a href="/modules/{{modCode}}/projects/{{slug}}">
     <img src="{{thumbnail}}" class="img-responsive">
-    <h5 class="nm-module-project-title">{{name}}</h5>
+    <h5 class="nm-module-project-title">{{title}}</h5>
   </a>
   {{#if members}}
     <small class="nm-module-project-team">By {{#each members}} {{this}}{{#unless @last}},{{/unless}} {{/each}}</small>

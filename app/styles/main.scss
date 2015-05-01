@@ -953,8 +953,8 @@ colgroup.hover {
   }
 }
 
-.nm-module-projects-list {
-  .nm-module-projects-list-item {
+.nm-module-projects-gallery {
+  .nm-module-projects-gallery-item {
     margin-bottom: 20px;
   }
   .nm-module-project-title {
@@ -969,6 +969,28 @@ colgroup.hover {
     width: 100%;
   }
 }
+
+.nm-module-project {
+  .nm-module-projects-list-item {
+    margin-bottom: 20px;
+    a {
+      color: #000;
+    }
+  }
+  .nm-module-project-list-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 0;
+  }
+  .nm-module-project-list-team {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
+
 
 // Friends
 .nm-friends-list {
