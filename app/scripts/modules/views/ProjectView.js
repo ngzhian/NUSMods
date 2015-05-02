@@ -20,18 +20,18 @@ module.exports = Marionette.LayoutView.extend({
     var modCode = this.model.get('modCode');
 
     NUSMods.getModuleProjects(modCode, function (data) {
-      var project = _.filter(data, function (proj) {
+      var projects = _.partition(data, function (proj) {
         return proj.slug === that.model.get('projectSlug');
-      })[0];
+      });
+      
       var projectContentView = new ProjectContentView({
-        model: new Backbone.Model(project)
+        model: new Backbone.Model(projects[0][0])
       });
       that.projectContentRegion.show(projectContentView);
-
+      
       var projectsListView = new ProjectsListView({
-        collection: new Backbone.Collection(data)
+        collection: new Backbone.Collection(projects[1])
       });
-
       that.projectsListRegion.show(projectsListView);
     });
   }
