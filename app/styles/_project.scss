@@ -1,0 +1,29 @@
+.nm-module-project {
+  .nm-module-projects-list-item {
+    margin-bottom: 20px;
+    a {
+      color: #000;
+    }
+  }
+  .nm-module-project-list-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 0;
+  }
+  $team-color: #999;
+  .nm-module-project-list-team {
+    color: $team-color;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+  .nm-module-project-team {
+    color: $team-color;
+  }
+  .nm-module-project-desc {
+    font-size: 16px;
+    margin-top: 40px;
+  }
+}

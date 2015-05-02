@@ -14,7 +14,6 @@ module.exports = Marionette.LayoutView.extend({
   onShow: function () {
     var that = this;
     function resizeVideo () {
-      console.log('resize')
       $('.nm-project-video').height(parseInt($('.nm-project-video').width() * 9 / 16));  
     }
     $(window).resize(resizeVideo);

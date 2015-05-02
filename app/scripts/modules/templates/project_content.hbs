@@ -1,2 +1,16 @@
 <iframe class="nm-project-video" src="{{videoUrl}}" frameborder="0" width="100%" allowfullscreen></iframe>
-<h1>{{title}}</h1>
+<div class="nm-project-details">
+  {{#if home_url}}
+    <a class="btn btn-lg btn-primary pull-right" href="{{home_url}}" target="_blank">View Project</a>
+  {{/if}}
+
+  <h1>{{title}}</h1>
+
+  {{#if members}}
+    <p class="nm-module-project-team">By {{#each members}} {{this}}{{#unless @last}},{{/unless}} {{/each}}</p>
+  {{/if}}
+
+  {{#if description}}
+    <p class="nm-module-project-desc">{{description}}</p>
+  {{/if}}
+</div>
