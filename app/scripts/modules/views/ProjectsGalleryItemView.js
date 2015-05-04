@@ -6,7 +6,7 @@ var videoParser = require('../../common/utils/videoParser.js');
 
 module.exports = Marionette.ItemView.extend({
   tagName: 'div',
-  className: 'col-sm-6',
+  className: 'col-sm-4',
   template: template,
   onShow: function () {
     var videoUrl = this.model.get('videos')[0];
