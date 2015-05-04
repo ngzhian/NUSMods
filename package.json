@@ -76,6 +76,8 @@
   },
   "browser": {
     "Mousetrap": "./app/bower_components/mousetrap/mousetrap.js",
+    "angular": "./app/bower_components/angularjs/index.js",
+    "angular-route": "./app/bower_components/angular-route/index.js",
     "backbone.picky": "./app/bower_components/backbone.picky/lib/amd/backbone.picky.js",
     "bootstrap/affix": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js",
     "bootstrap/alert": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js",
