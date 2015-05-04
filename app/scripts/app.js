@@ -129,7 +129,7 @@ App.on('start', function () {
   require('./apps');
   require('./blog');
   require('./reddit');
-  // require('ivle');
+  require('./ivle');
 
   // footer modules
   require('./about');
