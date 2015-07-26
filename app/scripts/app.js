@@ -12,7 +12,6 @@ var _ = require('underscore');
 var $ = require('jquery');
 var config = require('./common/config');
 var localforage = require('localforage');
-var user = require('./common/utils/user');
 require('qTip2');
 
 // Set Backbone.History.initialRoute to allow route handlers to find out if they
@@ -107,8 +106,6 @@ App.reqres.setHandler('deleteBookmark', function (id) {
     }
   });
 });
-
-user.initialize();
 
 App.on('start', function () {
   var AppView = require('./common/views/AppView');

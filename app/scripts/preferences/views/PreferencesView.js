@@ -11,8 +11,6 @@ var config = require('../../common/config');
 var preferencesNamespace = config.namespaces.preferences + ':';
 var ivleNamespace = config.namespaces.ivle + ':';
 var ProfileView = require('./ProfileView');
-var user = require('../../common/utils/user');
-
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
@@ -51,16 +49,16 @@ module.exports = Marionette.LayoutView.extend({
   },
   onShow: function () {
     var that = this;
-    user.getFacebookLoginStatus(function (response) {
-      var profileModel = new Backbone.Model({
-        loggedIn: response.loggedIn,
-        name: response.name,
-        facebookId: response.facebookId
-      });
-      that.profileRegion.show(new ProfileView({
-        model: profileModel
-      }));
-    });
+    // user.getFacebookLoginStatus(function (response) {
+    //   var profileModel = new Backbone.Model({
+    //     loggedIn: response.loggedIn,
+    //     name: response.name,
+    //     facebookId: response.facebookId
+    //   });
+    //   that.profileRegion.show(new ProfileView({
+    //     model: profileModel
+    //   }));
+    // });
   },
   connectIvle: function () {
     var that = this;
@@ -83,7 +81,7 @@ module.exports = Marionette.LayoutView.extend({
       };
 
       var callbackUrl = window.location.protocol + '//' + window.location.host + '/ivlelogin.html';
-      var popUpUrl = 'https://ivle.nus.edu.sg/api/login/?apikey=APILoadTest&url=' + callbackUrl;
+      var popUpUrl = 'https://ivle.nus.edu.sg/api/login/?apikey=O8ieVUFb72IU7feHcKmO3&url=' + callbackUrl;
       that.ivleDialog = window.open(popUpUrl, '', options);
     }
     else {
@@ -93,16 +91,17 @@ module.exports = Marionette.LayoutView.extend({
   fetchModuleHistory: function (ivleToken) {
     var that = this;
     $.get(
-      'https://ivle.nus.edu.sg/api/Lapi.svc/UserID_Get',
+      'https://ivle.nus.edu.sg/api/Lapi.svc/Profile_View',
       {
-        'APIKey': 'APILoadTest',
-        'Token': ivleToken
+        'APIKey': 'O8ieVUFb72IU7feHcKmO3',
+        'AuthToken': ivleToken
       },
-      function (studentId) {
+      function (data) {
+        var studentId = data.Results[0].UserID;
         $.get(
           'https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Taken',
           {
-            'APIKey': 'APILoadTest',
+            'APIKey': 'O8ieVUFb72IU7feHcKmO3',
             'AuthToken': ivleToken,
             'StudentID': studentId
           },

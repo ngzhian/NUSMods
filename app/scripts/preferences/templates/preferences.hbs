@@ -4,7 +4,14 @@
       <div class="panel-heading">
         <h2 class="panel-title nm-section-title">Profile</h2>
       </div>
-      <div class="panel-body" id="profile"></div>
+      <div class="panel-body" id="profile">
+        <button class="connect-ivle btn btn-primary" type="button">Get from IVLE</button>
+          <span class="ivle-status">
+            <i id="ivle-status-loading" class="fa fa-refresh fa-spin fa-lg hidden"></i>
+            <i id="ivle-status-success" class="fa fa-check-circle fa-lg hidden"></i>
+          </span>
+          <span class="help-block">Your module history will help us in providing a better, more personalized experience!</span>
+      </div>
     </div>
   </div>
 
@@ -15,20 +22,15 @@
       </div>
       <div class="panel-body">
         <form class="form-horizontal" role="form">
-          <!-- <div class="form-group">
+          {{!-- <div class="form-group">
             <div class="col-sm-4">
               <label for="mod-history" class="control-label">Module History</label>
             </div>
             <div class="col-sm-8">
-              <button class="connect-ivle btn btn-primary" type="button">Get from IVLE</button>
-              <span class="ivle-status">
-                <i id="ivle-status-loading" class="fa fa-refresh fa-spin fa-lg hidden"></i>
-                <i id="ivle-status-success" class="fa fa-check-circle fa-lg hidden"></i>
-              </span>
-              <span class="help-block">Your module history will help us in providing a better, more personalized experience!</span>
+              
             </div>
           </div>
-          <hr> -->
+          <hr> --}}
           <div class="form-group">
             <div class="col-sm-3">
               <label for="faculty" class="control-label">Faculty</label>
