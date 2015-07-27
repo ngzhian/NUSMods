@@ -2,21 +2,35 @@
 
 var Marionette = require('backbone.marionette');
 var template = require('../templates/profile.hbs');
+var user = require('../../common/utils/user');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
   events: {
-    'click .js-fb-connect': 'connectFacebook'
+    'click .js-login-ivle': 'login',
+    'click .js-logout-ivle': 'logout'
   },
-  connectFacebook: function () {
+  login: function () {
     var that = this;
-    // user.toggleFacebookLogin(function (response) {
-    //   that.model.set('loggedIn', response.loggedIn);
-    //   if (response.loggedIn) {
-    //     that.model.set('name', response.name);
-    //     that.model.set('facebookId', response.facebookId);
-    //   } 
-    //   that.render();
-    // });
+    user.loginIVLE(function (response) {
+      that.updateProfile(response);
+    });
+  },
+  logout: function () {
+    user.logoutIVLE();
+    this.updateProfile({ loggedIn: false });
+  },
+  onShow: function () {
+    var that = this;
+    user.getIVLELoginStatus(function (response) {
+      that.updateProfile(response);
+    });
+  },
+  updateProfile: function (response) {
+    if (response.loggedIn) {
+      this.model.set('userProfile', response.userProfile);
+    }
+    this.model.set('loggedIn', response.loggedIn);
+    this.render();
   }
 });

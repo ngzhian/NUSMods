@@ -1,14 +1,28 @@
 {{#if loggedIn}}
   <div>
-    <img src="http://graph.facebook.com/{{facebookId}}/picture?type=normal" class="img-rounded img-responsive">
-    <h3>{{name}}</h3>
+    <dl>
+      <dt>Name</dt>
+      <dd>{{userProfile.Name}}</dd>
+      <dt>Email</dt>
+      <dd>{{userProfile.Email}}</dd>
+      <dt>UserID</dt>
+      <dd>{{userProfile.UserID}}</dd>
+      <dt>Faculty</dt>
+      <dd>{{userProfile.Faculty}}</dd>
+      <dt>Major</dt>
+      <dd>{{userProfile.FirstMajor}}</dd>
+      {{#if userProfile.SecondMajor}}
+        <dt>Second Major</dt>
+        <dd>{{userProfile.SecondMajor}}</dd>
+      {{/if}}
+      <dt>Matriculation Year</dt>
+      <dd>{{userProfile.MatriculationYear}}</dd>
   </div>
   <hr>
-  <button class="btn btn-info js-fb-connect">
-    Logout of Facebook
-  </button> 
+  <button class="btn btn-danger js-logout-ivle">IVLE Logout</button> 
 {{else}}
-  <button class="btn btn-info js-fb-connect">
-    Connect to Facebook
-  </button> 
+  <div class="nm-ivle-login">
+    <button class="btn btn-primary js-login-ivle" type="button">IVLE Login</button>
+    <span class="help-block">Your module history will help us in providing a better, more personalized experience!</span>
+  </div>
 {{/if}}
