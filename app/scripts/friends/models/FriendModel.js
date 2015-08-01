@@ -14,23 +14,18 @@ module.exports = Backbone.Model.extend({
     }
   },
   initialize: function () {
-    this.updateModuleInfo();
-    this.on('change:queryString', this.updateModuleInfo);
-  },
-  updateModuleInfo: function () {
-    var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(this.get('queryString'));
-    // TODO: Change semester
+
+    var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(this.get('timetable').queryString);
     var that = this;
     var selectedModulesController = new SelectedModulesController({
-      name: name,
-      semester: this.get('semester'),
+      semester: this.get('timetable').semester,
       saveOnChange: false
     });
 
     _.each(selectedModules, function (module) {
       selectedModulesController.selectedModules.add({
         ModuleCode: module.ModuleCode,
-        Semester: that.get('semester')
+        Semester: that.get('timetable').semester
       }, module);
     });
 

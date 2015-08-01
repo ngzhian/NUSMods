@@ -1,17 +1,20 @@
 'use strict';
 
+var _ = require('underscore');
+var $ = require('jquery');
 var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
+var localforage = require('localforage');
+
 var NUSMods = require('./nusmods');
 var NavigationCollection = require('./common/collections/NavigationCollection');
 var NavigationView = require('./common/views/NavigationView');
 var Promise = require('bluebird'); // jshint ignore:line
 var SelectedModulesController = require('./common/controllers/SelectedModulesController');
 var TimetableModuleCollection = require('./common/collections/TimetableModuleCollection');
-var _ = require('underscore');
-var $ = require('jquery');
 var config = require('./common/config');
-var localforage = require('localforage');
+var user = require('./common/utils/user');
+
 require('qTip2');
 
 // Set Backbone.History.initialRoute to allow route handlers to find out if they
@@ -142,27 +145,30 @@ App.on('start', function () {
     var semTimetableFragment = config.semTimetableFragment(semester);
     return localforage.getItem(semTimetableFragment + ':queryString')
       .then(function (savedQueryString) {
-      if ('/' + semTimetableFragment === window.location.pathname) {
-        var queryString = window.location.search.slice(1);
-        if (queryString) {
-          if (savedQueryString !== queryString) {
-            // If initial query string does not match saved query string,
-            // timetable is shared.
-            App.request('selectedModules', semester).shared = true;
+        if ('/' + semTimetableFragment === window.location.pathname) {
+          var queryString = window.location.search.slice(1);
+          if (queryString) {
+            if (savedQueryString !== queryString) {
+              // If initial query string does not match saved query string,
+              // timetable is shared.
+              App.request('selectedModules', semester).shared = true;
+            }
+            // If there is a query string for timetable, return so that it will
+            // be used instead of saved query string.
+            return;
           }
-          // If there is a query string for timetable, return so that it will
-          // be used instead of saved query string.
-          return;
         }
-      }
-      var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
-      return Promise.all(_.map(selectedModules, function (module) {
-        return App.request('addModule', semester, module.ModuleCode, module);
-      }));
-    });
-  }).concat([NUSMods.generateModuleCodes()])).then(function () {
+        var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
+        return Promise.all(_.map(selectedModules, function (module) {
+          return App.request('addModule', semester, module.ModuleCode, module);
+        }));
+      });
+    }).concat([
+      NUSMods.generateModuleCodes(),
+      user.getIVLELoginStatus()
+    ])
+  ).then(function () {
     new AppView();
-
     Backbone.history.start({pushState: true});
   });
 

@@ -2,21 +2,21 @@
   <div>
     <dl>
       <dt>Name</dt>
-      <dd>{{userProfile.Name}}</dd>
+      <dd>{{userProfile.name}}</dd>
       <dt>Email</dt>
-      <dd>{{userProfile.Email}}</dd>
-      <dt>UserID</dt>
-      <dd>{{userProfile.UserID}}</dd>
+      <dd>{{userProfile.email}}</dd>
+      <dt>NUSNET ID</dt>
+      <dd>{{userProfile.nusnetId}}</dd>
       <dt>Faculty</dt>
-      <dd>{{userProfile.Faculty}}</dd>
+      <dd>{{userProfile.faculty}}</dd>
       <dt>Major</dt>
-      <dd>{{userProfile.FirstMajor}}</dd>
-      {{#if userProfile.SecondMajor}}
+      <dd>{{userProfile.firstMajor}}</dd>
+      {{#if userProfile.secondMajor}}
         <dt>Second Major</dt>
-        <dd>{{userProfile.SecondMajor}}</dd>
+        <dd>{{userProfile.secondMajor}}</dd>
       {{/if}}
       <dt>Matriculation Year</dt>
-      <dd>{{userProfile.MatriculationYear}}</dd>
+      <dd>{{userProfile.matriculationYear}}</dd>
   </div>
   <hr>
   <button class="btn btn-danger js-logout-ivle">IVLE Logout</button> 

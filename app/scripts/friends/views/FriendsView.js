@@ -15,14 +15,16 @@ var FriendsSelectedListView = require('./FriendsSelectedListView');
 var FriendModel = require('../models/FriendModel');
 var FriendsNotGoingSchoolView = require('./FriendsNotGoingSchoolView');
 var config = require('../../common/config');
+var user = require('../../common/utils/user');
 
 require('bootstrap/tooltip');
 require('bootstrap/popover');
 
-var USER_NAME = 'Me';
-
 module.exports = Marionette.LayoutView.extend({
   initialize: function () {
+    this.model = new Backbone.Model({
+      selectedAll: false
+    });
   },
   template: template,
   regions: {
@@ -36,28 +38,28 @@ module.exports = Marionette.LayoutView.extend({
   },
   onShow: function () {
 
-    this.model = new Backbone.Model({
-      selectedAll: false
-    });
-
     var that = this;
     var userTimetableUrl;
     localforage.getItem(config.semTimetableFragment(config.semester) + ':queryString').then(function (data) {
       userTimetableUrl = data;
     }).then(function () {
-      localforage.getItem('timetable:friends', function (data) {
+      user.getFriendsTimetable(function (data) {
+        
         // Get current user's information
-        var userInfo = {
-          name: USER_NAME,
-          queryString: userTimetableUrl,
-          selected: true,
-          semester: config.semester
+        var userProfile = user.userProfile;
+        userProfile.timetable = {
+          year: '2015-2016',
+          semester: config.semester,
+          queryString: userTimetableUrl
         };
+        userProfile.selected = true; // Display own timetable on initial load
+
         if (!data) {
-          data = [userInfo];
+          data = [userProfile];
         } else {
-          data.unshift(userInfo);
+          data.unshift(userProfile);
         }
+
         var friendsList = _.map(data, function (friend) {
           return new FriendModel(friend);
         });
@@ -72,9 +74,9 @@ module.exports = Marionette.LayoutView.extend({
         that.showSelectedFriendsList();
         that.updateDisplayedTimetable();
 
-        that.friendsListCollection.on('edit', function (oldFriend) {
-          that.updateQueryString(oldFriend, that.updateFriendRecord);
-        });
+        // that.friendsListCollection.on('edit', function (oldFriend) {
+        //   that.updateQueryString(oldFriend, that.updateFriendRecord);
+        // });
 
         that.friendsListCollection.on('change', function () {
           var friendsSelectedList = that.friendsListCollection.where({selected: true});
@@ -84,17 +86,17 @@ module.exports = Marionette.LayoutView.extend({
           that.friendsListView.render();
         });
 
-        that.friendsListCollection.on('save', function () {
-          var friendsData = _.pluck(this.models, 'attributes');
-          friendsData = _.map(friendsData, function (person) {
-            return _.omit(person, 'moduleInformation');
-          });
-          // Don't persist current user's information into friend's data.
-          friendsData = _.filter(friendsData, function (person) {
-            return person.name !== USER_NAME;
-          });
-          localforage.setItem('timetable:friends', friendsData);
-        });
+        // that.friendsListCollection.on('save', function () {
+        //   var friendsData = _.pluck(this.models, 'attributes');
+        //   friendsData = _.map(friendsData, function (person) {
+        //     return _.omit(person, 'moduleInformation');
+        //   });
+        //   // Don't persist current user's information into friend's data.
+        //   friendsData = _.filter(friendsData, function (person) {
+        //     return person.nusnetId !== user.userProfile.nusnetId;
+        //   });
+        //   localforage.setItem('timetable:friends', friendsData);
+        // });
       });
     });
 
@@ -111,62 +113,62 @@ module.exports = Marionette.LayoutView.extend({
   showSelectedFriendsList: function () {
     this.friendsSelectedListView.render();
   },
-  addFriendTimetable: function () {
-    var friendName = $('#name').val();
-    var originalUrl = $('#url').val();
-    var newFriend = new FriendModel({
-      name: friendName,
-      url: originalUrl,
-      selected: false
-    });
-    this.ui.addButton.popover('hide');
-    this.updateQueryString(newFriend, this.insertFriendTimetableFromUrl);
-  },
-  updateQueryString: function (friend, callback) {
-    var _this = this;
-    this.getFinalTimetableUrl(friend.get('url'), function (data) {
-      var urlFragments = data.redirectedUrl.split('/');
-      var queryFragments = urlFragments.slice(-1)[0].split('?');
-      var semester = parseInt(queryFragments[0].slice(3));
-      var timetableQueryString = queryFragments[1];
-      friend.set({
-        semester: semester,
-        queryString: timetableQueryString,
-      });
-      callback.call(_this, friend);
-    });
-  },
-  getFinalTimetableUrl: function (timetableUrl, callback) {
-    $.ajax({
-      url: 'https://nusmods.com/redirect.php',
-      type: 'GET',
-      crossDomain: true,
-      dataType: 'json',
-      data: {
-        timetable: timetableUrl
-      },
-      success: function (result) {
-        if (callback) {
-          callback(result);
-        }
-      },
-      error: function (xhr, status) {
-        window.alert(status);
-      }
-    });
-  },
-  updateFriendRecord: function (oldFriend) {
-    if (oldFriend.isValid()) {
-      this.friendsListCollection.trigger('change');
-      this.friendsListCollection.trigger('save');
-    }
-  },
-  insertFriendTimetableFromUrl: function (newFriend) {
-    if (newFriend.isValid()) {
-      this.friendsListCollection.add(newFriend);
-      this.friendsListCollection.trigger('save');
-    }
-  },
+  // addFriendTimetable: function () {
+  //   var friendName = $('#name').val();
+  //   var originalUrl = $('#url').val();
+  //   var newFriend = new FriendModel({
+  //     name: friendName,
+  //     url: originalUrl,
+  //     selected: false
+  //   });
+  //   this.ui.addButton.popover('hide');
+  //   this.updateQueryString(newFriend, this.insertFriendTimetableFromUrl);
+  // },
+  // updateQueryString: function (friend, callback) {
+  //   var _this = this;
+  //   this.getFinalTimetableUrl(friend.get('url'), function (data) {
+  //     var urlFragments = data.redirectedUrl.split('/');
+  //     var queryFragments = urlFragments.slice(-1)[0].split('?');
+  //     var semester = parseInt(queryFragments[0].slice(3));
+  //     var timetableQueryString = queryFragments[1];
+  //     friend.set({
+  //       semester: semester,
+  //       queryString: timetableQueryString,
+  //     });
+  //     callback.call(_this, friend);
+  //   });
+  // },
+  // getFinalTimetableUrl: function (timetableUrl, callback) {
+  //   $.ajax({
+  //     url: 'https://nusmods.com/redirect.php',
+  //     type: 'GET',
+  //     crossDomain: true,
+  //     dataType: 'json',
+  //     data: {
+  //       timetable: timetableUrl
+  //     },
+  //     success: function (result) {
+  //       if (callback) {
+  //         callback(result);
+  //       }
+  //     },
+  //     error: function (xhr, status) {
+  //       window.alert(status);
+  //     }
+  //   });
+  // },
+  // updateFriendRecord: function (oldFriend) {
+  //   if (oldFriend.isValid()) {
+  //     this.friendsListCollection.trigger('change');
+  //     this.friendsListCollection.trigger('save');
+  //   }
+  // },
+  // insertFriendTimetableFromUrl: function (newFriend) {
+  //   if (newFriend.isValid()) {
+  //     this.friendsListCollection.add(newFriend);
+  //     this.friendsListCollection.trigger('save');
+  //   }
+  // },
   selectAllFriends: function () {
     var selectedAll = this.model.get('selectedAll');
     this.model.set('selectedAll', !selectedAll);

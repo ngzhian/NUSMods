@@ -3,26 +3,28 @@
 var $ = require('jquery');
 var config = require('../config');
 var localforage = require('localforage');
+
+var nusmodsCloud = require('../../nusmods-cloud');
 var ivleNamespace = config.namespaces.ivle + ':';
 
 var IVLE_LAPI_KEY = config.IVLE.LAPIKey;
 
 module.exports = {
   ivleDialog: null,
+  userProfile: null,
   getIVLELoginStatus: function (callback) {
-    if (!callback) {
-      return;
-    }
+    var that = this;
     localforage.getItem(ivleNamespace + 'user', function (userProfile) {
-      if (userProfile && userProfile.UserID) {
-        callback({
+      if (userProfile && userProfile.nusnetId) {
+        that.userProfile = userProfile;
+        callback ? callback({
           loggedIn: true,
           userProfile: userProfile
-        });  
+        }) : null;
       } else {
-        callback({
+        callback ? callback({
           loggedIn: false
-        });
+        }) : null;
       }
     });
   },
@@ -44,16 +46,28 @@ module.exports = {
           'APIKey': IVLE_LAPI_KEY,
           'AuthToken': ivleToken
         }, function (data) {
-          localforage.setItem(ivleNamespace + 'user', data.Results[0]);
-          var studentId = data.Results[0].UserID;
+          var ivleUserProfile = data.Results[0];
+          var userProfile = {
+            nusnetId: ivleUserProfile.UserID,
+            name: ivleUserProfile.Name,
+            email: ivleUserProfile.Email,
+            gender: ivleUserProfile.Gender,
+            faculty: ivleUserProfile.Faculty,
+            firstMajor: ivleUserProfile.FirstMajor,
+            secondMajor: ivleUserProfile.SecondMajor,
+            matriculationYear: ivleUserProfile.MatriculationYear
+          };
+          localforage.setItem(ivleNamespace + 'user', userProfile);
+          var nusnetId = userProfile.nusnetId;
+          that.userProfile = userProfile;
           callback({
             loggedIn: true,
-            userProfile: data.Results[0]
+            userProfile: userProfile
           });
           $.get('https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Taken', {
             'APIKey': IVLE_LAPI_KEY,
             'AuthToken': ivleToken,
-            'StudentID': studentId
+            'StudentID': nusnetId
           }, function (data) { 
             localforage.setItem(ivleNamespace + 'modulesTaken', data);
           }, 'jsonp');
@@ -69,6 +83,7 @@ module.exports = {
     }
   },
   logoutIVLE: function () {
+    this.userProfile = null;
     localforage.removeItem(ivleNamespace + 'user');
     localforage.removeItem(ivleNamespace + 'ivleTaken');
     localforage.removeItem(ivleNamespace + 'modulesTaken');
@@ -77,8 +92,18 @@ module.exports = {
     if (!callback) {
       return;
     }
-    localforage.getItem(ivleNamespace + 'user', function (user) {
-      callback(user);
+    if (this.userProfile) {
+      return callback(userProfile);
+    }
+    localforage.getItem(ivleNamespace + 'user', function (userProfile) {
+      callback(userProfile);
     });
   },
+  getFriendsTimetable: function (callback) {
+    if (!this.userProfile) {
+      alert('Login first!');
+      return;
+    }
+    nusmodsCloud.getFriendsTimetable(this.userProfile.UserID, '2015-2016/sem1', callback);
+  }
 }
