@@ -37,7 +37,7 @@ module.exports = Backbone.Model.extend({
     this.set('moduleInformation', selectedModulesController.selectedModules);
     
     selectedModulesController.selectedModules.on('change', function () {
-      that.trigger('change');
+      that.collection.trigger('change');
     });
   }
 });
