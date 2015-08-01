@@ -35,6 +35,11 @@ module.exports = Marionette.LayoutView.extend({
     'addButton': '.js-nm-friends-add-button'
   },
   onShow: function () {
+
+    this.model = new Backbone.Model({
+      selectedAll: false
+    });
+
     var that = this;
     var userTimetableUrl;
     localforage.getItem(config.semTimetableFragment(config.semester) + ':queryString').then(function (data) {
@@ -163,8 +168,10 @@ module.exports = Marionette.LayoutView.extend({
     }
   },
   selectAllFriends: function () {
+    var selectedAll = this.model.get('selectedAll');
+    this.model.set('selectedAll', !selectedAll);
     _.each(this.friendsListCollection.models, function (person) {
-      person.set('selected', true);
+      person.set('selected', !selectedAll);
     });
   },
   updateDisplayedTimetable: function () {
