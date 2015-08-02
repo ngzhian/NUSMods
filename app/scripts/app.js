@@ -141,6 +141,16 @@ App.on('start', function () {
   require('./help');
   require('./support');
 
+  localforage.getItem(bookmarkedModulesNamespace, function (modules) {
+    if (!modules) {
+      localforage.setItem(bookmarkedModulesNamespace, []);
+    }
+  });
+
+  // For sidebar menu
+  require('bootstrap/tooltip');
+  $('[data-toggle="tooltip"]').tooltip();
+
   Promise.all(_.map(_.range(1, 5), function(semester) {
     var semTimetableFragment = config.semTimetableFragment(semester);
     return localforage.getItem(semTimetableFragment + ':queryString')
@@ -168,19 +178,10 @@ App.on('start', function () {
       user.getIVLELoginStatus()
     ])
   ).then(function () {
+    console.log('AppView');
     new AppView();
     Backbone.history.start({pushState: true});
   });
-
-  localforage.getItem(bookmarkedModulesNamespace, function (modules) {
-    if (!modules) {
-      localforage.setItem(bookmarkedModulesNamespace, []);
-    }
-  });
-
-  // For sidebar menu
-  require('bootstrap/tooltip');
-  $('[data-toggle="tooltip"]').tooltip();
 
 });
 

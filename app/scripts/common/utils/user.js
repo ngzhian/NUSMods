@@ -1,6 +1,8 @@
 'use strict';
 
 var $ = require('jquery');
+var Promise = require('bluebird'); // jshint ignore:line
+
 var config = require('../config');
 var localforage = require('localforage');
 
@@ -14,18 +16,20 @@ module.exports = {
   userProfile: null,
   getIVLELoginStatus: function (callback) {
     var that = this;
-    localforage.getItem(ivleNamespace + 'user', function (userProfile) {
+    console.log('getIVLELoginStatus')
+    localforage.getItem(ivleNamespace + 'user').then(function (userProfile) {
+      console.log('obtainedUserProfile');
       if (userProfile && userProfile.nusnetId) {
         that.userProfile = userProfile;
-        callback ? callback({
+        return callback ? callback({
           loggedIn: true,
           userProfile: userProfile
         }) : null;
       } else {
-        callback ? callback({
+        return callback ? callback({
           loggedIn: false
         }) : null;
-      }
+      });
     });
   },
   loginIVLE: function (callback) {
@@ -99,11 +103,36 @@ module.exports = {
       callback(userProfile);
     });
   },
-  getFriendsTimetable: function (callback) {
+  getFriends: function (callback) {
     if (!this.userProfile) {
       alert('Login first!');
       return;
     }
-    nusmodsCloud.getFriendsTimetable(this.userProfile.UserID, '2015-2016/sem1', callback);
+    nusmodsCloud.getFriends(this.userProfile.nusnetId, callback);
+  },
+  getFriendsTimetable: function (callback) {
+    console.log('getFriendsTimetable');
+    if (!this.userProfile) {
+      alert('Login first!');
+      return;
+    }
+    nusmodsCloud.getFriendsTimetable(this.userProfile.nusnetId, '2015-2016/sem1', callback);
+  },
+  getPendingFriendRequestsReceived: function (callback) {
+    console.log('getPendingFriendRequestsReceived');
+    if (!this.userProfile) {
+      alert('Login first!');
+      return;
+    }
+    nusmodsCloud.getPendingFriendRequestsReceived(this.userProfile.nusnetId, callback);
+  },
+  getPendingFriendRequestsSent: function (callback) {
+    console.log('getPendingFriendRequestsSent');
+    if (!this.userProfile) {
+      alert('Login first!');
+      return;
+    }
+    nusmodsCloud.getPendingFriendRequestsSent(this.userProfile.nusnetId, callback);
   }
+
 }

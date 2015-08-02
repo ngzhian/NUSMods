@@ -33,6 +33,39 @@ module.exports = {
       queryString: 'CS3216[TUT]=1&CS3216[LEC]=1&CS3219[LEC]=1&CS3219[TUT]=1&CS2103[LEC]=1&CS2103[TUT]=1'
     });
   },
+  getFriends: function (nusnetId, callback) {
+    return callback([
+    {
+      nusnetId: 'a0112345',
+      name: 'HONG LU',
+      email: 'honglu@u.nus.edu',
+      gender: 'Female',
+      faculty: 'Faculty of Science',
+      firstMajor: 'Quantitative Finance (Hons)',
+      secondMajor: '',
+      matriculationYear: '2014'
+    },
+    {
+      nusnetId: 'a0113615',
+      name: 'LIU XINAN',
+      email: 'xinan@u.nus.edu',
+      gender: 'Male',
+      faculty: 'School of Computing',
+      firstMajor: 'Computer Science (Hons)',
+      secondMajor: '',
+      matriculationYear: '2014'
+    },
+    {
+      nusnetId: 'a0111862',
+      name: 'XU BILI',
+      email: 'bili@u.nus.edu',
+      gender: 'Male',
+      faculty: 'School of Computing',
+      firstMajor: 'Computer Science (Hons)',
+      secondMajor: '',
+      matriculationYear: '2014'
+    }]);
+  },
   getFriendsTimetable: function (nusnetId, semester, callback) {
     return callback([
     {
@@ -91,7 +124,7 @@ module.exports = {
       status: 'success'
     });
   },
-  getPendingReceivedFriendRequests: function (nusnetId, callback) {
+  getPendingFriendRequestsReceived: function (nusnetId, callback) {
     return callback([
     {
       nusnetId: 'a0112345',
@@ -124,7 +157,7 @@ module.exports = {
       matriculationYear: '2014'
     }]);
   },
-  getPendingSentFriendRequests: function (nusnetId, callback) {
+  getPendingFriendRequestsSent: function (nusnetId, callback) {
     return callback([
     {
       nusnetId: 'a0112345'
