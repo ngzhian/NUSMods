@@ -169,14 +169,19 @@ module.exports = {
       nusnetId: 'a0111862'
     }]);
   },
-  acceptRequest: function (nusnetId, friendNusnetId, callback) {
+  acceptFriendRequest: function (nusnetId, friendNusnetId, callback) {
     return callback({
       status: 'success'
     });
   },
-  acceptRequest: function (nusnetId, friendNusnetId, callback) {
+  rejectFriendRequest: function (nusnetId, friendNusnetId, callback) {
     return callback({
       status: 'success'
     });
   },
+  cancelFriendRequest: function (nusnetId, friendNusnetId, callback) {
+    return callback({
+      status: 'success'
+    });
+  }
 };

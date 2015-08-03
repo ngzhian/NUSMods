@@ -1,22 +1,20 @@
-<td>
-  <input type="checkbox" class="js-nm-friends-select-checkbox" {{#if selected}}checked{{/if}}>
-</td>
-<td class="nm-friends-name">
+{{#if timetableMode}}
+  <td>
+    <input type="checkbox" class="js-nm-friends-select-checkbox" {{#if selected}}checked{{/if}}>
+  </td>
+{{/if}}
+<td class="{{#if timetableMode}}js-nm-friends-name{{/if}} nm-friends-name">
   <h5 class="media-heading">
-    {{#if name}}
-      {{name}}
-    {{else}}
-      {{nusnetId}}
-    {{/if}}
+    {{name}}
   </h5>
 </td>
-<td>
-  <a class="js-nm-friends-edit nm-friends-action" data-toggle="popover">
-    <i class="fa fa-pencil"></i>
-  </a>
-</td>
-<td>
-  <a class="js-nm-friends-delete nm-friends-action">
-    <i class="fa fa-trash-o"></i>
-  </a>
-</td>
+{{#unless timetableMode}}  
+  <td>{{faculty}}</td>
+  <td>{{firstMajor}}</td>
+  <td><a href="mailto:{{email}}">{{email}}</a></td>
+  <td>
+    <a class="btn btn-danger btn-sm js-nm-friends-unfriend">
+      <i class="fa fa-lg fa-times"></i> Unfriend
+    </a>
+  </td>
+{{/unless}}

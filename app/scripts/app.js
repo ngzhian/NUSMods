@@ -178,7 +178,6 @@ App.on('start', function () {
       user.getIVLELoginStatus()
     ])
   ).then(function () {
-    console.log('AppView');
     new AppView();
     Backbone.history.start({pushState: true});
   });

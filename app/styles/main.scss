@@ -944,11 +944,6 @@ colgroup.hover {
 }
 
 .nm-friends-list-item {
-  &:first-child {
-    .nm-friends-action {
-      display: none;
-    }
-  }
   .nm-friends-name {
     cursor: pointer;
     width: 100%;
@@ -963,9 +958,9 @@ colgroup.hover {
   }
 }
 
-.js-nm-friends-add-popover {
+.nm-friends-add-popover {
   color: #000;
-  width: 200px;
+  width: 240px;
 }
 
 .nm-friends-selected-list {

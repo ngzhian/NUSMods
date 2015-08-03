@@ -6,7 +6,7 @@ var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
 var localforage = require('localforage');
 
-var template = require('../templates/friends.hbs');
+var template = require('../templates/friends_timetable.hbs');
 var addFriendTimetableModalTemplate = require('../templates/friend_add_modal.hbs');
 var timify = require('../../common/utils/timify');
 var TimetableFlexView = require('../../timetable_flex/views/TimetableFlexView');
@@ -43,7 +43,7 @@ module.exports = Marionette.LayoutView.extend({
     localforage.getItem(config.semTimetableFragment(config.semester) + ':queryString').then(function (data) {
       userTimetableUrl = data;
     }).then(function () {
-      user.getFriendsTimetable(function (data) {
+      user.getFriendsTimetable().then(function (data) {
         
         // Get current user's information
         var userProfile = user.userProfile;
@@ -61,6 +61,7 @@ module.exports = Marionette.LayoutView.extend({
         }
 
         var friendsList = _.map(data, function (friend) {
+          friend.timetableMode = true;
           return new FriendModel(friend);
         });
         that.friendsListCollection = new Backbone.Collection(friendsList);
@@ -74,10 +75,6 @@ module.exports = Marionette.LayoutView.extend({
         that.showSelectedFriendsList();
         that.updateDisplayedTimetable();
 
-        // that.friendsListCollection.on('edit', function (oldFriend) {
-        //   that.updateQueryString(oldFriend, that.updateFriendRecord);
-        // });
-
         that.friendsListCollection.on('change', function () {
           var friendsSelectedList = that.friendsListCollection.where({selected: true});
           that.friendsSelectedListView.collection = new Backbone.Collection(friendsSelectedList);
@@ -85,18 +82,6 @@ module.exports = Marionette.LayoutView.extend({
           that.showSelectedFriendsList();
           that.friendsListView.render();
         });
-
-        // that.friendsListCollection.on('save', function () {
-        //   var friendsData = _.pluck(this.models, 'attributes');
-        //   friendsData = _.map(friendsData, function (person) {
-        //     return _.omit(person, 'moduleInformation');
-        //   });
-        //   // Don't persist current user's information into friend's data.
-        //   friendsData = _.filter(friendsData, function (person) {
-        //     return person.nusnetId !== user.userProfile.nusnetId;
-        //   });
-        //   localforage.setItem('timetable:friends', friendsData);
-        // });
       });
     });
 
@@ -107,68 +92,28 @@ module.exports = Marionette.LayoutView.extend({
     });
   },
   events: {
-    'click .js-nm-friends-add': 'addFriendTimetable',
+    'click .js-nm-friends-add': 'addFriend',
     'click .js-nm-friends-select-all': 'selectAllFriends'
   },
   showSelectedFriendsList: function () {
     this.friendsSelectedListView.render();
   },
-  // addFriendTimetable: function () {
-  //   var friendName = $('#name').val();
-  //   var originalUrl = $('#url').val();
-  //   var newFriend = new FriendModel({
-  //     name: friendName,
-  //     url: originalUrl,
-  //     selected: false
-  //   });
-  //   this.ui.addButton.popover('hide');
-  //   this.updateQueryString(newFriend, this.insertFriendTimetableFromUrl);
-  // },
-  // updateQueryString: function (friend, callback) {
-  //   var _this = this;
-  //   this.getFinalTimetableUrl(friend.get('url'), function (data) {
-  //     var urlFragments = data.redirectedUrl.split('/');
-  //     var queryFragments = urlFragments.slice(-1)[0].split('?');
-  //     var semester = parseInt(queryFragments[0].slice(3));
-  //     var timetableQueryString = queryFragments[1];
-  //     friend.set({
-  //       semester: semester,
-  //       queryString: timetableQueryString,
-  //     });
-  //     callback.call(_this, friend);
-  //   });
-  // },
-  // getFinalTimetableUrl: function (timetableUrl, callback) {
-  //   $.ajax({
-  //     url: 'https://nusmods.com/redirect.php',
-  //     type: 'GET',
-  //     crossDomain: true,
-  //     dataType: 'json',
-  //     data: {
-  //       timetable: timetableUrl
-  //     },
-  //     success: function (result) {
-  //       if (callback) {
-  //         callback(result);
-  //       }
-  //     },
-  //     error: function (xhr, status) {
-  //       window.alert(status);
-  //     }
-  //   });
-  // },
-  // updateFriendRecord: function (oldFriend) {
-  //   if (oldFriend.isValid()) {
-  //     this.friendsListCollection.trigger('change');
-  //     this.friendsListCollection.trigger('save');
-  //   }
-  // },
-  // insertFriendTimetableFromUrl: function (newFriend) {
-  //   if (newFriend.isValid()) {
-  //     this.friendsListCollection.add(newFriend);
-  //     this.friendsListCollection.trigger('save');
-  //   }
-  // },
+  addFriend: function () {
+    var that = this;
+    var friendNusnetId = $('#matric-num').val();
+    if (friendNusnetId.length === 0) {
+      // TODO: Do some basic validation
+      alert('Non-empty value required!');
+      return;
+    } else {
+      user.addFriend(friendNusnetId).then(function (response) {
+        if (response.status === 'success') {
+          alert('Friend request sent to ' + friendNusnetId);
+          that.ui.addButton.popover('hide');
+        }
+      });
+    }
+  },
   selectAllFriends: function () {
     var selectedAll = this.model.get('selectedAll');
     this.model.set('selectedAll', !selectedAll);
