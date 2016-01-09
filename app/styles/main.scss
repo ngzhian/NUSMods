@@ -954,28 +954,14 @@ colgroup.hover {
 }
 
 // Friends
-.nm-friends-list {
-  padding: 0;
+.popover {
+  width: 100%;
 }
 
 .nm-friends-list-item {
-  border-top: 1px solid #ccc;
-  cursor: pointer;
-  margin-top: 0;
-  padding: 15px;
-  &:first-child {
-    border-top: none;
-  }
-  &:hover {
-    background-color: #eee;
-    transition: background .3s linear;
-    .nm-friends-delete {
-      display: inherit;
-    }
-  }
-  .nm-friends-delete {
-    display: none;
-    float: right;
+  .nm-friends-name {
+    cursor: pointer;
+    width: 100%;
   }
 }
 
@@ -987,9 +973,9 @@ colgroup.hover {
   }
 }
 
-.js-nm-friends-add-popover {
+.nm-friends-add-popover {
   color: #000;
-  width: 200px;
+  width: 240px;
 }
 
 .nm-friends-selected-list {

@@ -76,7 +76,7 @@ App.addInitializer(function () {
     appRoutes: {
       'venues': 'showVenueInformation',
       'venues(/:id)': 'showVenueInformation',
-      'venueavailability': 'showVenueAvailability'
+      'venue_availability': 'showVenueAvailability'
     }
   });
 });

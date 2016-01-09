@@ -10,10 +10,15 @@ var navigationItem = App.request('addNavigationItem', {
 });
 
 var controller = {
-  showFriends: function () {
-    var FriendsView = require('./views/FriendsView');
+  showFriendsTimetable: function () {
+    var FriendsTimetableView = require('./views/FriendsTimetableView');
     navigationItem.select();
-    App.mainRegion.show(new FriendsView());
+    App.mainRegion.show(new FriendsTimetableView());
+  },
+  showFriendsManagement: function () {
+    var FriendsManagementView = require('./views/FriendsManagementView');
+    navigationItem.select();
+    App.mainRegion.show(new FriendsManagementView());
   }
 };
 
@@ -21,7 +26,8 @@ App.addInitializer(function () {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {
-      'friends': 'showFriends'
+      'friends': 'showFriendsTimetable',
+      'friends_management': 'showFriendsManagement'
     }
   });
 });

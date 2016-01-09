@@ -6,7 +6,7 @@ var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
 var localforage = require('localforage');
 
-var template = require('../templates/friends.hbs');
+var template = require('../templates/friends_timetable.hbs');
 var addFriendTimetableModalTemplate = require('../templates/friend_add_modal.hbs');
 var timify = require('../../common/utils/timify');
 var TimetableFlexView = require('../../timetable_flex/views/TimetableFlexView');
@@ -15,14 +15,16 @@ var FriendsSelectedListView = require('./FriendsSelectedListView');
 var FriendModel = require('../models/FriendModel');
 var FriendsNotGoingSchoolView = require('./FriendsNotGoingSchoolView');
 var config = require('../../common/config');
+var user = require('../../common/utils/user');
 
 require('bootstrap/tooltip');
 require('bootstrap/popover');
 
-var USER_NAME = 'Me';
-
 module.exports = Marionette.LayoutView.extend({
   initialize: function () {
+    this.model = new Backbone.Model({
+      selectedAll: false
+    });
   },
   template: template,
   regions: {
@@ -35,25 +37,31 @@ module.exports = Marionette.LayoutView.extend({
     'addButton': '.js-nm-friends-add-button'
   },
   onShow: function () {
+
     var that = this;
     var userTimetableUrl;
     localforage.getItem(config.semTimetableFragment(config.semester) + ':queryString').then(function (data) {
       userTimetableUrl = data;
     }).then(function () {
-      localforage.getItem('timetable:friends', function (data) {
+      user.getFriendsTimetable().then(function (data) {
+        
         // Get current user's information
-        var userInfo = {
-          name: USER_NAME,
-          queryString: userTimetableUrl,
-          selected: true,
-          semester: config.semester
+        var userProfile = user.userProfile;
+        userProfile.timetable = {
+          year: '2015-2016',
+          semester: config.semester,
+          queryString: userTimetableUrl
         };
+        userProfile.selected = true; // Display own timetable on initial load
+
         if (!data) {
-          data = [userInfo];
+          data = [userProfile];
         } else {
-          data.unshift(userInfo);
+          data.unshift(userProfile);
         }
+
         var friendsList = _.map(data, function (friend) {
+          friend.timetableMode = true;
           return new FriendModel(friend);
         });
         that.friendsListCollection = new Backbone.Collection(friendsList);
@@ -84,59 +92,34 @@ module.exports = Marionette.LayoutView.extend({
     });
   },
   events: {
-    'click .js-nm-friends-add': 'addFriendTimetable'
+    'click .js-nm-friends-add': 'addFriend',
+    'click .js-nm-friends-select-all': 'selectAllFriends'
   },
   showSelectedFriendsList: function () {
     this.friendsSelectedListView.render();
   },
-  addFriendTimetable: function () {
+  addFriend: function () {
     var that = this;
-    var friendName = $('#name').val();
-    var timetableUrl = $('#url').val();
-    this.getFinalTimetableUrl(timetableUrl, function (data) {
-      that.ui.addButton.popover('hide');
-      that.insertFriendTimetableFromUrl(friendName, data.redirectedUrl);
-    });
-  },
-  getFinalTimetableUrl: function (timetableUrl, callback) {
-    $.ajax({
-      url: 'https://nusmods.com/redirect.php',
-      type: 'GET',
-      crossDomain: true,
-      dataType: 'json',
-      data: {
-        timetable: timetableUrl
-      },
-      success: function (result) {
-        if (callback) {
-          callback(result);
+    var friendNusnetId = $('#matric-num').val();
+    if (friendNusnetId.length === 0) {
+      // TODO: Do some basic validation
+      alert('Non-empty value required!');
+      return;
+    } else {
+      user.addFriend(friendNusnetId).then(function (response) {
+        if (response.status === 'success') {
+          alert('Friend request sent to ' + friendNusnetId);
+          that.ui.addButton.popover('hide');
         }
-      },
-      error: function (xhr, status) {
-        window.alert(status);
-      }
-    });
+      });
+    }
   },
-  insertFriendTimetableFromUrl: function (name, timetableUrl) {
-    var urlFragments = timetableUrl.split('/');
-    var queryFragments = urlFragments.slice(-1)[0].split('?');
-    var semester = parseInt(queryFragments[0].slice(3));
-    var timetableQueryString = queryFragments[1];
-    this.friendsListCollection.add(new FriendModel({
-      name: name,
-      semester: semester,
-      queryString: timetableQueryString,
-      selected: false
-    }));
-    var friendsData = _.pluck(this.friendsListCollection.models, 'attributes');
-    friendsData = _.map(friendsData, function (person) {
-      return _.omit(person, 'moduleInformation');
+  selectAllFriends: function () {
+    var selectedAll = this.model.get('selectedAll');
+    this.model.set('selectedAll', !selectedAll);
+    _.each(this.friendsListCollection.models, function (person) {
+      person.set('selected', !selectedAll);
     });
-    // Don't persist current user's information into friend's data.
-    friendsData = _.filter(friendsData, function (person) {
-      return person.name !== USER_NAME;
-    });
-    localforage.setItem('timetable:friends', friendsData);
   },
   updateDisplayedTimetable: function () {
 
@@ -174,7 +157,7 @@ module.exports = Marionette.LayoutView.extend({
       }
     });
 
-    if (daysNotGoingToSchool.Saturday !== people.length) {
+    if (daysNotGoingToSchool.Saturday.length === people.length) {
       // By default, hide Saturday if everyone not going on Saturday
       daysNotGoingToSchoolList.splice(5, 1);
     }

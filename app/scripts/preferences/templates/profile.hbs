@@ -1,0 +1,28 @@
+{{#if loggedIn}}
+  <div>
+    <dl>
+      <dt>Name</dt>
+      <dd>{{userProfile.name}}</dd>
+      <dt>Email</dt>
+      <dd>{{userProfile.email}}</dd>
+      <dt>NUSNET ID</dt>
+      <dd>{{userProfile.nusnetId}}</dd>
+      <dt>Faculty</dt>
+      <dd>{{userProfile.faculty}}</dd>
+      <dt>Major</dt>
+      <dd>{{userProfile.firstMajor}}</dd>
+      {{#if userProfile.secondMajor}}
+        <dt>Second Major</dt>
+        <dd>{{userProfile.secondMajor}}</dd>
+      {{/if}}
+      <dt>Matriculation Year</dt>
+      <dd>{{userProfile.matriculationYear}}</dd>
+  </div>
+  <hr>
+  <button class="btn btn-danger js-logout-ivle">IVLE Logout</button> 
+{{else}}
+  <div class="nm-ivle-login">
+    <button class="btn btn-primary js-login-ivle" type="button">IVLE Login</button>
+    <span class="help-block">Your module history will help us in providing a better, more personalized experience!</span>
+  </div>
+{{/if}}

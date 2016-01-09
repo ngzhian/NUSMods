@@ -1,15 +1,25 @@
 <div class="row">
+  <div class="col-md-12">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="active"><a role="tab" data-toggle="tab">Friends Timetables</a></li>
+      <li><a href="/friends_management" role="tab" data-toggle="tab">Friend Management</a></li>
+    </ul>
+  </div>
+</div>
+<br>
+<div class="row">
   <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
         <button type="button" class="btn btn-xs btn-primary js-nm-friends-add-button pull-right" data-toggle="popover">
-          <i class="fa fa-plus"></i>
+          <i class="fa fa-plus"></i> Add Friend
         </button>
         <h2 class="panel-title nm-section-title">People</h2>
       </div>
-      <div class="panel-body nm-friends-list">
-      </div>
+      <table class="table table-hover nm-friends-list">
+      </table>
     </div>
+    <a class="js-nm-friends-select-all">Select / Unselect All</a>
   </div>
   <div class="col-md-9">
     <div class="panel panel-default">
