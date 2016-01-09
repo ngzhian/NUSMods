@@ -65,7 +65,7 @@ module.exports = {
       }
     }).done(function (response) {
       if (callback) {
-        callback(response.data);
+        callback(response.data.lessons);
       }
     }).fail(function () {
       alert('Something has went wrong. Please try again later.');

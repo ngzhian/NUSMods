@@ -22,35 +22,26 @@ module.exports = {
       var fn = callback ? callback : resolve;
 
       if (that.userProfile) {
-        fn({
-          loggedIn: true,
-          userProfile: that.userProfile
-        });
+        fn({ loggedIn: true, userProfile: that.userProfile });
         return;
       }
 
       localforage.getItem(userNamespace + 'profile', function (userProfile) {
         if (userProfile && userProfile.nusnetId && userProfile.accessToken) {
           nusmodsCloud.setAccessToken(userProfile.accessToken);
-          // nusmodsCloud.getTimetable(userProfile.nusnetId, semTransformer.NUSModsYearSemToCloudSem(config.academicYear, config.semester),
-          //   function (queryString) {
-          //     that.userProfile = userProfile;
-
-          //   },
-          //   function () {
-          //     fn({
-          //       loggedIn: false
-          //     });
-          //   }
-          // );
-          fn({
-            loggedIn: true,
-            userProfile: userProfile
-          });
+          nusmodsCloud.getTimetable(userProfile.nusnetId, semTransformer.NUSModsYearSemToCloudSem(config.academicYear, config.semester),
+            function (cloudTimetable) {
+              that.syncLocalTimetableWithCloud(config.semester, cloudTimetable);
+              that.userProfile = userProfile;
+              fn({ loggedIn: true, userProfile: userProfile });
+            },
+            function () {
+              that.logout();
+              fn({ loggedIn: false });
+            }
+          );
         } else {
-          fn({
-            loggedIn: false
-          });
+          fn({ loggedIn: false });
         }
       });
     });
@@ -81,10 +72,7 @@ module.exports = {
             });
             var cloudTimetable = index === -1 ? '' : userProfile.timetables[index].lessons;
             that.syncLocalTimetableWithCloud(config.semester, cloudTimetable);
-            fn({
-              loggedIn: true,
-              userProfile: userProfile
-            });
+            fn({ loggedIn: true, userProfile: userProfile });
             window.ivleLoginSuccessful = undefined;
           });
         };
@@ -114,6 +102,9 @@ module.exports = {
             shouldOverwriteLocal = !window.confirm('Timetable saved online by NUSMods ' +
                                               'is different from current one. Overwrite ' +
                                               'online saved timetable with current timetable?');
+          } else {
+            // Cloud timetable same as local timetable. No op.
+            return;
           }
         } else {
           shouldOverwriteLocal = true;
