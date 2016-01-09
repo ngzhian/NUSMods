@@ -10,5 +10,6 @@ module.exports = _.extend({}, {
     semTimetableFragment: function (semester) {
       return 'timetable/' + applicationConfig.academicYear.replace('/', '-') +
               '/sem' + (semester || applicationConfig.semester);
-    }
+    },
+    currentSemester: applicationConfig.academicYear.replace('/', '-') + '/sem' + applicationConfig.semester
   }, applicationConfig, secretsConfig);

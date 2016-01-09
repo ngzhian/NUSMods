@@ -14,6 +14,7 @@ var SelectedModulesController = require('./common/controllers/SelectedModulesCon
 var TimetableModuleCollection = require('./common/collections/TimetableModuleCollection');
 var config = require('./common/config');
 var user = require('./common/utils/user');
+var bookmarkedModulesNamespace = config.namespaces.bookmarkedModules + ':';
 
 require('qTip2');
 
@@ -32,7 +33,6 @@ Backbone.History.prototype.loadUrl = function() {
 };
 
 var App = new Marionette.Application();
-
 App.addRegions({
   mainRegion: '.content',
   navigationRegion: '#nav',
@@ -71,6 +71,17 @@ App.reqres.setHandler('removeModule', function (sem, id) {
   var selectedModules = selectedModulesControllers[sem - 1].selectedModules;
   return selectedModules.remove(selectedModules.get(id));
 });
+App.reqres.setHandler('overwriteModules', function (sem, queryString) {
+  var selectedModules = selectedModulesControllers[sem - 1].selectedModules;
+  var selectedCodes = selectedModules.pluck('ModuleCode');
+  _.each(selectedCodes, function (code) {
+    selectedModules.remove(selectedModules.get(code));
+  });
+  var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(queryString);
+  return Promise.all(_.map(selectedModules, function (module) {
+    return App.request('addModule', sem, module.ModuleCode, module);
+  }));
+});
 App.reqres.setHandler('isModuleSelected', function (sem, id) {
   return !!selectedModulesControllers[sem - 1].selectedModules.get(id);
 });
@@ -81,8 +92,6 @@ App.reqres.setHandler('displayLessons', function (sem, id, display) {
     lesson.set('display', display);
   });
 });
-
-var bookmarkedModulesNamespace = config.namespaces.bookmarkedModules + ':';
 
 App.reqres.setHandler('getBookmarks', function (callback) {
   if (!callback) {
@@ -151,29 +160,32 @@ App.on('start', function () {
   require('bootstrap/tooltip');
   $('[data-toggle="tooltip"]').tooltip();
 
-  Promise.all(_.map(_.range(1, 5), function(semester) {
-    var semTimetableFragment = config.semTimetableFragment(semester);
-    return localforage.getItem(semTimetableFragment + ':queryString')
-      .then(function (savedQueryString) {
-        if ('/' + semTimetableFragment === window.location.pathname) {
-          var queryString = window.location.search.slice(1);
-          if (queryString) {
-            if (savedQueryString !== queryString) {
-              // If initial query string does not match saved query string,
-              // timetable is shared.
-              App.request('selectedModules', semester).shared = true;
+  Promise.all(
+    _.map(_.range(1, 5), function(semester) {
+      var semTimetableFragment = config.semTimetableFragment(semester);
+      return localforage.getItem(semTimetableFragment + ':queryString')
+        .then(function (savedQueryString) {
+          if ('/' + semTimetableFragment === window.location.pathname) {
+            var queryString = window.location.search.slice(1);
+            if (queryString) {
+              if (queryString !== savedQueryString) {
+                // If initial query string does not match saved query string,
+                // timetable is shared.
+                App.request('selectedModules', semester).shared = true;
+              }
+              // If there is a query string for timetable, return so that it will
+              // be used instead of saved query string.
+              return;
             }
-            // If there is a query string for timetable, return so that it will
-            // be used instead of saved query string.
-            return;
           }
-        }
-        var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
-        return Promise.all(_.map(selectedModules, function (module) {
-          return App.request('addModule', semester, module.ModuleCode, module);
-        }));
-      });
-    }).concat([
+          var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
+          return Promise.all(_.map(selectedModules, function (module) {
+            return App.request('addModule', semester, module.ModuleCode, module);
+          }));
+        });
+      }
+    )
+    .concat([
       NUSMods.generateModuleCodes(),
       user.getLoginStatus()
     ])

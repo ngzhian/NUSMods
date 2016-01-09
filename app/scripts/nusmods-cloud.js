@@ -1,24 +1,55 @@
 'use strict';
-
 // This module serves as a wrapper for the NUSMods Cloud API.
-
-var API_HOST = require('./common/config').apiHost;
 var $ = require('jquery');
 
+var config = require('./common/config');
+var userNamespace = config.namespaces.user + ':';
+var API_HOST = require('./common/config').apiHost;
+
 module.exports = {
+  accessToken: null,
+  setAccessToken: function (accessToken) {
+    this.accessToken = accessToken;
+  },
+  removeAccessToken: function () {
+    this.accessToken = null;
+  },
   auth: function (ivleToken, callback) {
+    var that = this;
     if (!callback) {
       return;
     }
-    $.post(API_HOST + '/users', {
-      ivleToken: ivleToken
-    }, function (response) {
+    $.ajax({
+      url: API_HOST + '/users',
+      type: 'post',
+      data: {
+        ivleToken: ivleToken
+      }
+    }).done(function (response) {
+      that.setAccessToken(response.data.accessToken);
       callback(response.data);
+    }).fail(function () {
+      alert('Something has went wrong. Please try again later.');
     });
   },
   updateTimetable: function (nusnetId, semester, queryString, callback) {
-    return callback({
-      status: 'success'
+    var that = this;
+    $.ajax({
+      url: API_HOST + '/users/' + nusnetId + '/timetables',
+      type: 'post',
+      headers: {
+        Authorization: that.accessToken
+      },
+      data: {
+        semester: semester,
+        lessons: queryString
+      }
+    }).done(function (response) {
+      if (callback) {
+        callback(response.data);
+      }
+    }).fail(function () {
+      alert('Something has went wrong. Please try again later.');
     });
   },
   getTimetable: function (nusnetId, year, semester, callback) {
@@ -27,6 +58,24 @@ module.exports = {
       semester: 1,
       queryString: 'CS3216[TUT]=1&CS3216[LEC]=1&CS3219[LEC]=1&CS3219[TUT]=1&CS2103[LEC]=1&CS2103[TUT]=1'
     });
+    // var that = this;
+    // $.ajax({
+    //   url: API_HOST + '/users/' + nusnetId + '/timetables/',
+    //   type: 'post',
+    //   headers: {
+    //     Authorization: that.accessToken
+    //   },
+    //   data: {
+    //     semester: semester,
+    //     lessons: queryString
+    //   }
+    // }).done(function (response) {
+    //   if (callback) {
+    //     callback(response.data);
+    //   }
+    // }).fail(function () {
+    //   alert('Something has went wrong. Please try again later.');
+    // });
   },
   getFriends: function (nusnetId, callback) {
     return callback([

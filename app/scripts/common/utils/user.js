@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+var _ = require('underscore');
 var Promise = require('bluebird'); // jshint ignore:line
 
 var config = require('../config');
@@ -16,7 +17,6 @@ module.exports = {
   userProfile: null,
   getLoginStatus: function (callback) {
     var that = this;
-
     return new Promise(function (resolve) {
       var fn = callback ? callback : resolve;
 
@@ -30,6 +30,7 @@ module.exports = {
 
       localforage.getItem(userNamespace + 'profile', function (userProfile) {
         if (userProfile && userProfile.nusnetId) {
+          nusmodsCloud.setAccessToken(userProfile.accessToken);
           that.userProfile = userProfile;
           fn({
             loggedIn: true,
@@ -63,12 +64,51 @@ module.exports = {
 
           nusmodsCloud.auth(ivleToken, function (userProfile) {
             localforage.setItem(userNamespace + 'profile', userProfile);
-            localforage.setItem(userNamespace + 'accessToken', userProfile.accessToken);
             that.userProfile = userProfile;
-            fn({
-              loggedIn: true,
-              userProfile: userProfile
-            });
+
+            localforage
+              .getItem(config.semTimetableFragment(config.semester) + ':queryString')
+              .then(function (data) {
+                var index = _.findIndex(userProfile.timetables, function (timetable) {
+                  return timetable.semester === config.currentSemester;
+                });
+
+                var cloudTimetable = userProfile.timetables[index].lessons;
+                var shouldOverwriteLocal = true;
+                if (index !== -1) {
+                  // Existing timetable exists from cloud
+                  if (data) {
+                    // Existing local timetable exists
+                    if (cloudTimetable !== data) {
+                      // Existing Cloud timetable is different from existing local timetable
+                      shouldOverwriteLocal = !window.confirm('Timetable saved online by NUSMods ' +
+                                                        'is different from current one. Overwrite ' +
+                                                        'online saved timetable with current timetable?');
+                    }
+                  } else {
+                    shouldOverwriteLocal = true;
+                  }
+                } else {
+                  shouldOverwriteLocal = false;
+                }
+
+                if (shouldOverwriteLocal) {
+                  var app = require('../../app');
+                  app.request('overwriteModules', config.semester, cloudTimetable);
+                } else {
+                  nusmodsCloud.updateTimetable(userProfile.nusnetId,
+                    config.currentSemester,
+                    data,
+                    function (response) {
+                      console.log(response);
+                    }
+                  );
+                }
+                fn({
+                  loggedIn: true,
+                  userProfile: userProfile
+                });
+              });
             window.ivleLoginSuccessful = undefined;
           });
         };
@@ -83,7 +123,6 @@ module.exports = {
   },
   logout: function () {
     localforage.removeItem(userNamespace + 'profile');
-    localforage.removeItem(userNamespace + 'accessToken');
     this.userProfile = null;
   },
   getUser: function (callback) {

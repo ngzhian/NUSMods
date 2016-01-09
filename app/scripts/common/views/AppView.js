@@ -77,10 +77,10 @@ module.exports = Backbone.View.extend({
 
     $('.container').removeClass('hidden');
 
-    Mousetrap.bind('/', function(ev) {
+    Mousetrap.bind('/', function(event) {
       analytics.track('Search', 'Keyboard', 'Main Search');
       $('#s2id_autogen2').focus();
-      ev.preventDefault();
+      event.preventDefault();
       return false;
     });
 
@@ -178,7 +178,6 @@ module.exports = Backbone.View.extend({
     });
 
     attachFastClick(document.body);
-
 
     (function () {
       $('.cors-round-text').html(corsify.determineRound(Date.now()));
