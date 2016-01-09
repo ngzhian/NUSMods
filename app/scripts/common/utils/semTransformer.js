@@ -6,7 +6,7 @@ module.exports = {
     var fragments = semester.split('sem');
     return {
       semester: parseInt(fragments[1]),
-      year: fragments[0];
+      year: fragments[0]
     };
   },
   NUSModsYearSemToCloudSem: function (year, semester) {

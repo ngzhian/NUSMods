@@ -32,7 +32,7 @@ module.exports = {
       alert('Something has went wrong. Please try again later.');
     });
   },
-  updateTimetable: function (nusnetId, semester, queryString, callback) {
+  updateTimetable: function (nusnetId, semester, queryString, successCallback, failCallback) {
     var that = this;
     $.ajax({
       url: API_HOST + '/users/' + nusnetId + '/timetables',
@@ -45,37 +45,34 @@ module.exports = {
         lessons: queryString
       }
     }).done(function (response) {
+      if (successCallback) {
+        successCallback(response.data);
+      }
+    }).fail(function () {
+      alert('Something has went wrong. Please try again later.');
+      if (failCallback) {
+        failCallback(response.data);
+      }
+    });
+  },
+  getTimetable: function (nusnetId, semester, callback) {
+    var that = this;
+    $.ajax({
+      url: API_HOST + '/users/' + nusnetId + '/timetables/' + semester,
+      type: 'get',
+      headers: {
+        Authorization: that.accessToken
+      }
+    }).done(function (response) {
       if (callback) {
         callback(response.data);
       }
     }).fail(function () {
       alert('Something has went wrong. Please try again later.');
+      if (failCallback) {
+        failCallback(response.data);
+      }
     });
-  },
-  getTimetable: function (nusnetId, year, semester, callback) {
-    return callback({
-      year: '2015-2016',
-      semester: 1,
-      queryString: 'CS3216[TUT]=1&CS3216[LEC]=1&CS3219[LEC]=1&CS3219[TUT]=1&CS2103[LEC]=1&CS2103[TUT]=1'
-    });
-    // var that = this;
-    // $.ajax({
-    //   url: API_HOST + '/users/' + nusnetId + '/timetables/',
-    //   type: 'post',
-    //   headers: {
-    //     Authorization: that.accessToken
-    //   },
-    //   data: {
-    //     semester: semester,
-    //     lessons: queryString
-    //   }
-    // }).done(function (response) {
-    //   if (callback) {
-    //     callback(response.data);
-    //   }
-    // }).fail(function () {
-    //   alert('Something has went wrong. Please try again later.');
-    // });
   },
   getFriends: function (nusnetId, callback) {
     return callback([

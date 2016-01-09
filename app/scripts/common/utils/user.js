@@ -8,6 +8,7 @@ var config = require('../config');
 var localforage = require('localforage');
 
 var nusmodsCloud = require('../../nusmods-cloud');
+var semTransformer = require('./semTransformer');
 var userNamespace = config.namespaces.user + ':';
 
 var IVLE_LAPI_KEY = config.IVLE.LAPIKey;
@@ -29,9 +30,19 @@ module.exports = {
       }
 
       localforage.getItem(userNamespace + 'profile', function (userProfile) {
-        if (userProfile && userProfile.nusnetId) {
+        if (userProfile && userProfile.nusnetId && userProfile.accessToken) {
           nusmodsCloud.setAccessToken(userProfile.accessToken);
-          that.userProfile = userProfile;
+          // nusmodsCloud.getTimetable(userProfile.nusnetId, semTransformer.NUSModsYearSemToCloudSem(config.academicYear, config.semester),
+          //   function (queryString) {
+          //     that.userProfile = userProfile;
+
+          //   },
+          //   function () {
+          //     fn({
+          //       loggedIn: false
+          //     });
+          //   }
+          // );
           fn({
             loggedIn: true,
             userProfile: userProfile
@@ -65,50 +76,15 @@ module.exports = {
           nusmodsCloud.auth(ivleToken, function (userProfile) {
             localforage.setItem(userNamespace + 'profile', userProfile);
             that.userProfile = userProfile;
-
-            localforage
-              .getItem(config.semTimetableFragment(config.semester) + ':queryString')
-              .then(function (data) {
-                var index = _.findIndex(userProfile.timetables, function (timetable) {
-                  return timetable.semester === config.currentSemester;
-                });
-
-                var cloudTimetable = userProfile.timetables[index].lessons;
-                var shouldOverwriteLocal = true;
-                if (index !== -1) {
-                  // Existing timetable exists from cloud
-                  if (data) {
-                    // Existing local timetable exists
-                    if (cloudTimetable !== data) {
-                      // Existing Cloud timetable is different from existing local timetable
-                      shouldOverwriteLocal = !window.confirm('Timetable saved online by NUSMods ' +
-                                                        'is different from current one. Overwrite ' +
-                                                        'online saved timetable with current timetable?');
-                    }
-                  } else {
-                    shouldOverwriteLocal = true;
-                  }
-                } else {
-                  shouldOverwriteLocal = false;
-                }
-
-                if (shouldOverwriteLocal) {
-                  var app = require('../../app');
-                  app.request('overwriteModules', config.semester, cloudTimetable);
-                } else {
-                  nusmodsCloud.updateTimetable(userProfile.nusnetId,
-                    config.currentSemester,
-                    data,
-                    function (response) {
-                      console.log(response);
-                    }
-                  );
-                }
-                fn({
-                  loggedIn: true,
-                  userProfile: userProfile
-                });
-              });
+            var index = _.findIndex(userProfile.timetables, function (timetable) {
+              return timetable.semester === config.currentSemester;
+            });
+            var cloudTimetable = index === -1 ? '' : userProfile.timetables[index].lessons;
+            that.syncLocalTimetableWithCloud(config.semester, cloudTimetable);
+            fn({
+              loggedIn: true,
+              userProfile: userProfile
+            });
             window.ivleLoginSuccessful = undefined;
           });
         };
@@ -124,6 +100,38 @@ module.exports = {
   logout: function () {
     localforage.removeItem(userNamespace + 'profile');
     this.userProfile = null;
+  },
+  syncLocalTimetableWithCloud: function (semester, cloudTimetable) {
+    var that = this;
+    localforage
+      .getItem(config.semTimetableFragment(semester) + ':queryString')
+      .then(function (localTimetable) {
+        var shouldOverwriteLocal = false;
+        if (localTimetable) {
+          // Existing local timetable exists
+          if (cloudTimetable !== localTimetable) {
+            // Existing Cloud timetable is different from existing local timetable
+            shouldOverwriteLocal = !window.confirm('Timetable saved online by NUSMods ' +
+                                              'is different from current one. Overwrite ' +
+                                              'online saved timetable with current timetable?');
+          }
+        } else {
+          shouldOverwriteLocal = true;
+        }
+
+        if (shouldOverwriteLocal) {
+          var app = require('../../app');
+          app.request('overwriteModules', semester, cloudTimetable);
+        } else {
+          nusmodsCloud.updateTimetable(that.userProfile.nusnetId,
+            semTransformer.NUSModsYearSemToCloudSem(config.academicYear, semester),
+            localTimetable,
+            function () {
+              alert('Timetable saved to cloud!');
+            }
+          );
+        }
+      });
   },
   getUser: function (callback) {
     var that = this;
