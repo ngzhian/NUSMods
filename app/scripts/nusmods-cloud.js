@@ -2,23 +2,18 @@
 
 // This module serves as a wrapper for the NUSMods Cloud API.
 
+var API_HOST = require('./common/config').apiHost;
+var $ = require('jquery');
+
 module.exports = {
-  auth: function (nusnetId, ivleToken, callback) {
+  auth: function (ivleToken, callback) {
     if (!callback) {
       return;
     }
-    return callback('nusmodsToken');
-  },
-  getStudentProfile: function (nusnetId, callback) {
-    return callback({
-      nusnetId: 'a0073063',
-      name: 'Tay Yang Shun',
-      email: 'tay.yang.shun@u.nus.edu',
-      gender: 'Male',
-      faculty: 'School of Computing',
-      firstMajor: 'Computer Science (Hons)',
-      secondMajor: '',
-      matriculationYear: '2010'
+    $.post(API_HOST + '/users', {
+      ivleToken: ivleToken
+    }, function (response) {
+      callback(response.data);
     });
   },
   updateTimetable: function (nusnetId, semester, queryString, callback) {

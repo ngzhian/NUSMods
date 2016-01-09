@@ -125,7 +125,7 @@ App.on('start', function () {
   require('./timetable');
   require('./modules');
   require('./friends');
-  require('./venues'); 
+  require('./venues');
   require('./nuswhispers');
   require('./news');
   require('./apps');
@@ -175,7 +175,7 @@ App.on('start', function () {
       });
     }).concat([
       NUSMods.generateModuleCodes(),
-      user.getIVLELoginStatus()
+      user.getLoginStatus()
     ])
   ).then(function () {
     new AppView();

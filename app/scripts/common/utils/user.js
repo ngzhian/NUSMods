@@ -7,16 +7,16 @@ var config = require('../config');
 var localforage = require('localforage');
 
 var nusmodsCloud = require('../../nusmods-cloud');
-var ivleNamespace = config.namespaces.ivle + ':';
+var userNamespace = config.namespaces.user + ':';
 
 var IVLE_LAPI_KEY = config.IVLE.LAPIKey;
 
 module.exports = {
   ivleDialog: null,
   userProfile: null,
-  getIVLELoginStatus: function (callback) {
+  getLoginStatus: function (callback) {
     var that = this;
-    
+
     return new Promise(function (resolve) {
       var fn = callback ? callback : resolve;
 
@@ -28,7 +28,7 @@ module.exports = {
         return;
       }
 
-      localforage.getItem(ivleNamespace + 'user', function (userProfile) {
+      localforage.getItem(userNamespace + 'profile', function (userProfile) {
         if (userProfile && userProfile.nusnetId) {
           that.userProfile = userProfile;
           fn({
@@ -43,7 +43,7 @@ module.exports = {
       });
     });
   },
-  loginIVLE: function (callback) {
+  login: function (callback) {
     var that = this;
 
     return new Promise(function (resolve) {
@@ -59,38 +59,18 @@ module.exports = {
                       ', top=' + top + ', left=' + left;
 
         window.ivleLoginSuccessful = function (ivleToken) {
-          localforage.setItem(ivleNamespace + 'ivleToken', ivleToken);
-          $.get('https://ivle.nus.edu.sg/api/Lapi.svc/Profile_View', {
-            'APIKey': IVLE_LAPI_KEY,
-            'AuthToken': ivleToken
-          }, function (data) {
-            var ivleUserProfile = data.Results[0];
-            var userProfile = {
-              nusnetId: ivleUserProfile.UserID,
-              name: ivleUserProfile.Name,
-              email: ivleUserProfile.Email,
-              gender: ivleUserProfile.Gender,
-              faculty: ivleUserProfile.Faculty,
-              firstMajor: ivleUserProfile.FirstMajor,
-              secondMajor: ivleUserProfile.SecondMajor,
-              matriculationYear: ivleUserProfile.MatriculationYear
-            };
-            localforage.setItem(ivleNamespace + 'user', userProfile);
-            var nusnetId = userProfile.nusnetId;
+          localforage.setItem(userNamespace + 'ivleToken', ivleToken);
+
+          nusmodsCloud.auth(ivleToken, function (userProfile) {
+            localforage.setItem(userNamespace + 'profile', userProfile);
+            localforage.setItem(userNamespace + 'accessToken', userProfile.accessToken);
             that.userProfile = userProfile;
             fn({
               loggedIn: true,
               userProfile: userProfile
             });
-            // $.get('https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Taken', {
-            //   'APIKey': IVLE_LAPI_KEY,
-            //   'AuthToken': ivleToken,
-            //   'StudentID': nusnetId
-            // }, function (data) { 
-            //   localforage.setItem(ivleNamespace + 'modulesTaken', data);
-            // }, 'jsonp');
-          }, 'jsonp');
-          window.ivleLoginSuccessful = undefined;
+            window.ivleLoginSuccessful = undefined;
+          });
         };
 
         var callbackUrl = window.location.protocol + '//' + window.location.host + '/ivlelogin.html';
@@ -101,11 +81,10 @@ module.exports = {
       }
     });
   },
-  logoutIVLE: function () {
+  logout: function () {
+    localforage.removeItem(userNamespace + 'profile');
+    localforage.removeItem(userNamespace + 'accessToken');
     this.userProfile = null;
-    localforage.removeItem(ivleNamespace + 'user');
-    localforage.removeItem(ivleNamespace + 'ivleTaken');
-    localforage.removeItem(ivleNamespace + 'modulesTaken');
   },
   getUser: function (callback) {
     var that = this;
@@ -115,7 +94,7 @@ module.exports = {
         fn(userProfile);
         return;
       }
-      localforage.getItem(ivleNamespace + 'user', function (userProfile) {
+      localforage.getItem(userNamespace + 'profile', function (userProfile) {
         fn(userProfile);
       });
     });

@@ -25,7 +25,6 @@
     "account": "P"
   },
   "namespaces": {
-    "ivle": "ivle",
     "preferences": "preferences",
     "moduleFinder": "module:finder",
     "bookmarkedModules": "module:bookmarks:bookmarkedModules",

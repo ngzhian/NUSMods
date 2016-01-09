@@ -9,7 +9,6 @@ var template = require('../templates/preferences.hbs');
 var themePicker = require('../../common/themes/themePicker');
 var config = require('../../common/config');
 var preferencesNamespace = config.namespaces.preferences + ':';
-var ivleNamespace = config.namespaces.ivle + ':';
 var ProfileView = require('./ProfileView');
 
 module.exports = Marionette.LayoutView.extend({

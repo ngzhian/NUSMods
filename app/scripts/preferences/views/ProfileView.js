@@ -12,17 +12,20 @@ module.exports = Marionette.LayoutView.extend({
   },
   login: function () {
     var that = this;
-    user.loginIVLE(function (response) {
+    user.login(function (response) {
       that.updateProfile(response);
     });
   },
   logout: function () {
-    user.logoutIVLE();
-    this.updateProfile({ loggedIn: false });
+    var willLogout = window.confirm('Are you sure you want to log out?');
+    if (willLogout) {
+      user.logout();
+      this.updateProfile({ loggedIn: false });
+    }
   },
   onShow: function () {
     var that = this;
-    user.getIVLELoginStatus(function (response) {
+    user.getLoginStatus(function (response) {
       that.updateProfile(response);
     });
   },
