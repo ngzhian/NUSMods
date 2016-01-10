@@ -61,28 +61,25 @@ for (var i = 0; i < 5; i++) {
 App.reqres.setHandler('selectedModules', function (sem) {
   return selectedModulesControllers[sem - 1].selectedModules;
 });
-App.reqres.setHandler('addModule', function (sem, id, options) {
+App.reqres.setHandler('addModule', function (sem, code, options) {
   return selectedModulesControllers[sem - 1].selectedModules.add({
-    ModuleCode: id,
+    ModuleCode: code,
     Semester: sem
   }, options);
 });
-App.reqres.setHandler('removeModule', function (sem, id) {
+App.reqres.setHandler('removeModule', function (sem, code) {
   var selectedModules = selectedModulesControllers[sem - 1].selectedModules;
-  return selectedModules.remove(selectedModules.get(id));
+  return selectedModules.remove(selectedModules.get(code));
 });
 App.reqres.setHandler('overwriteModules', function (sem, queryString) {
-  selectedModulesControllers[sem - 1] = new SelectedModulesController({
-    semester: sem
+  var existingCodes = App.request('selectedModules', sem).pluck('ModuleCode');
+  _.each(existingCodes, function (code) {
+    App.request('removeModule', sem, code);
   });
-  var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(queryString);
-  return Promise.all(_.map(selectedModules, function (module) {
-    console.log('Add module:', module.ModuleCode);
+  var newSelectedModules = TimetableModuleCollection.fromQueryStringToJSON(queryString);
+  return Promise.all(_.map(newSelectedModules, function (module) {
     return App.request('addModule', sem, module.ModuleCode, module);
-  })).then(function () {
-    Backbone.history.navigate(config.semTimetableFragment(sem) +
-      '?' + queryString);
-  });
+  }));
 });
 App.reqres.setHandler('isModuleSelected', function (sem, id) {
   return !!selectedModulesControllers[sem - 1].selectedModules.get(id);
@@ -189,9 +186,10 @@ App.on('start', function () {
     )
     .concat([
       NUSMods.generateModuleCodes(),
-      user.getLoginStatus()
     ])
   ).then(function () {
+    user.getLoginStatus()
+  }).then(function () {
     new AppView();
     Backbone.history.start({pushState: true});
   });
