@@ -65,10 +65,8 @@ module.exports = {
                       ', top=' + top + ', left=' + left;
 
         window.ivleLoginSuccessful = function (ivleToken) {
-          localforage.setItem(userNamespace + 'ivleToken', ivleToken);
-
           nusmodsCloud.auth(ivleToken, function (userProfile) {
-            localforage.setItem(userNamespace + 'profile', userProfile);
+            localforage.setItem(userNamespace + 'profile', _.omit(userProfile, 'timetables'));
             that.userProfile = userProfile;
             var index = _.findIndex(userProfile.timetables, function (timetable) {
               return timetable.semester === config.currentSemester;
@@ -102,6 +100,8 @@ module.exports = {
           if (localTimetable) {
             // Existing local timetable exists
             if (cloudTimetable !== localTimetable) {
+              console.log('cloudTimetable', cloudTimetable);
+              console.log('localTimetable', localTimetable);
               // Existing Cloud timetable is different from existing local timetable
               shouldOverwriteLocal = !window.confirm('Timetable saved online by NUSMods ' +
                                                 'is different from current one. Overwrite ' +
@@ -115,9 +115,11 @@ module.exports = {
           }
 
           if (shouldOverwriteLocal) {
+            console.log('Will overwrite local timetable with cloud timetable');
             var app = require('../../app');
             app.request('overwriteModules', semester, cloudTimetable).then(resolve);
           } else {
+            console.log('Will overwrite cloud timetable with local timetable');
             nusmodsCloud.updateTimetable(that.userProfile.nusnetId,
               semTransformer.NUSModsYearSemToCloudSem(config.academicYear, semester),
               localTimetable,
