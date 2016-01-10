@@ -122,14 +122,15 @@ module.exports = {
             app.request('overwriteModules', semester, cloudTimetable).then(resolve);
           } else {
             console.log('Will overwrite cloud timetable with local timetable');
-            nusmodsCloud.updateTimetable(that.userProfile.nusnetId,
-              semTransformer.NUSModsYearSemToCloudSem(config.academicYear, semester),
-              localTimetable,
+            that.updateTimetable(semester, localTimetable,
               function () {
                 alert('Timetable saved to cloud!');
                 resolve();
               },
-              reject
+              function () {
+                alert('Error saving timetable to cloud!');
+                reject();
+              }
             );
           }
         });
@@ -146,6 +147,22 @@ module.exports = {
       localforage.getItem(userNamespace + 'profile', function (userProfile) {
         fn(userProfile);
       });
+    });
+  },
+  updateTimetable: function (semester, timetable, callback, failCallback) {
+    var that = this;
+    return new Promise(function (resolve, reject) {
+      var fn = callback ? callback : resolve;
+      var failFn = failCallback ? failCallback : reject;
+      if (!that.userProfile || !that.userProfile.nusnetId) {
+        failFn();
+      }
+      nusmodsCloud.updateTimetable(that.userProfile.nusnetId,
+        semTransformer.NUSModsYearSemToCloudSem(config.academicYear, semester),
+        timetable,
+        fn,
+        failFn
+      );
     });
   },
   getFriends: function (callback) {

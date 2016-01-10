@@ -32,7 +32,7 @@ module.exports = {
       alert('Something has went wrong. Please try again later.');
     });
   },
-  updateTimetable: function (nusnetId, semester, queryString, successCallback, failCallback) {
+  updateTimetable: function (nusnetId, semester, queryString, callback, failCallback) {
     var that = this;
     $.ajax({
       url: API_HOST + '/users/' + nusnetId + '/timetables',
@@ -45,8 +45,8 @@ module.exports = {
         lessons: queryString
       }
     }).done(function (response) {
-      if (successCallback) {
-        successCallback(response.data);
+      if (callback) {
+        callback(response.data);
       }
     }).fail(function () {
       alert('Something has went wrong. Please try again later.');
