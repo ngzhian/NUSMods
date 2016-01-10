@@ -99,18 +99,20 @@ module.exports = {
           var shouldOverwriteLocal = false;
           if (localTimetable) {
             // Existing local timetable exists
+            console.log('cloud timetable:', cloudTimetable);
+            console.log('local timetable:', localTimetable);
             if (cloudTimetable !== localTimetable) {
-              console.log('cloudTimetable', cloudTimetable);
-              console.log('localTimetable', localTimetable);
               // Existing Cloud timetable is different from existing local timetable
               shouldOverwriteLocal = !window.confirm('Timetable saved online by NUSMods ' +
                                                 'is different from current one. Overwrite ' +
                                                 'online saved timetable with current timetable?');
             } else {
               // Cloud timetable same as local timetable. No op.
+              console.log('Cloud timetable same as local timetable, no-op');
               return resolve();
             }
           } else {
+            console.log('No existing local timetable');
             shouldOverwriteLocal = true;
           }
 
