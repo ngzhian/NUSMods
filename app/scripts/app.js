@@ -72,15 +72,17 @@ App.reqres.setHandler('removeModule', function (sem, id) {
   return selectedModules.remove(selectedModules.get(id));
 });
 App.reqres.setHandler('overwriteModules', function (sem, queryString) {
-  var selectedModules = selectedModulesControllers[sem - 1].selectedModules;
-  var selectedCodes = selectedModules.pluck('ModuleCode');
-  _.each(selectedCodes, function (code) {
-    selectedModules.remove(selectedModules.get(code));
+  selectedModulesControllers[sem - 1] = new SelectedModulesController({
+    semester: sem
   });
   var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(queryString);
   return Promise.all(_.map(selectedModules, function (module) {
+    console.log('Add module:', module.ModuleCode);
     return App.request('addModule', sem, module.ModuleCode, module);
-  }));
+  })).then(function () {
+    Backbone.history.navigate(config.semTimetableFragment(sem) +
+      '?' + queryString);
+  });
 });
 App.reqres.setHandler('isModuleSelected', function (sem, id) {
   return !!selectedModulesControllers[sem - 1].selectedModules.get(id);
