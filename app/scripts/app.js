@@ -71,16 +71,16 @@ App.reqres.setHandler('removeModule', function (sem, code) {
   var selectedModules = selectedModulesControllers[sem - 1].selectedModules;
   return selectedModules.remove(selectedModules.get(code));
 });
-App.reqres.setHandler('overwriteModules', function (sem, queryString) {
-  var existingCodes = App.request('selectedModules', sem).pluck('ModuleCode');
-  return Promise
-    .all(_.map(existingCodes, function (code) {
-      return App.request('removeModule', sem, code);
-    }))
-    .all(_.map(TimetableModuleCollection.fromQueryStringToJSON(queryString), function (module) {
-      return App.request('addModule', sem, module.ModuleCode, module);
-    }));
-});
+// App.reqres.setHandler('overwriteModules', function (sem, queryString) {
+//   var existingCodes = App.request('selectedModules', sem).pluck('ModuleCode');
+//   return Promise
+//     .all(_.map(existingCodes, function (code) {
+//       return App.request('removeModule', sem, code);
+//     }))
+//     .all(_.map(TimetableModuleCollection.fromQueryStringToJSON(queryString), function (module) {
+//       return App.request('addModule', sem, module.ModuleCode, module);
+//     }));
+// });
 App.reqres.setHandler('isModuleSelected', function (sem, id) {
   return !!selectedModulesControllers[sem - 1].selectedModules.get(id);
 });

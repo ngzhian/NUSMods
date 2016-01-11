@@ -118,8 +118,10 @@ module.exports = {
 
           if (shouldOverwriteLocal) {
             console.log('Will overwrite local timetable with cloud timetable');
-            var app = require('../../app');
-            app.request('overwriteModules', semester, cloudTimetable).then(resolve);
+            localforage.setItem(config.semTimetableFragment(semester) + ':queryString', cloudTimetable,
+              function () {
+                window.location.href = '/';
+              });
           } else {
             console.log('Will overwrite cloud timetable with local timetable');
             that.updateTimetable(semester, localTimetable,
