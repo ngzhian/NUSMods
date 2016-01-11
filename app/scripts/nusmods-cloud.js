@@ -74,86 +74,41 @@ module.exports = {
       }
     });
   },
-  getFriends: function (nusnetId, callback) {
-    return callback([
-    {
-      nusnetId: 'a0112345',
-      name: 'HONG LU',
-      email: 'honglu@u.nus.edu',
-      gender: 'Female',
-      faculty: 'Faculty of Science',
-      firstMajor: 'Quantitative Finance (Hons)',
-      secondMajor: '',
-      matriculationYear: '2014'
-    },
-    {
-      nusnetId: 'a0113615',
-      name: 'LIU XINAN',
-      email: 'xinan@u.nus.edu',
-      gender: 'Male',
-      faculty: 'School of Computing',
-      firstMajor: 'Computer Science (Hons)',
-      secondMajor: '',
-      matriculationYear: '2014'
-    },
-    {
-      nusnetId: 'a0111862',
-      name: 'XU BILI',
-      email: 'bili@u.nus.edu',
-      gender: 'Male',
-      faculty: 'School of Computing',
-      firstMajor: 'Computer Science (Hons)',
-      secondMajor: '',
-      matriculationYear: '2014'
-    }]);
+  getFriends: function (nusnetId, callback, failCallback) {
+    $.ajax({
+      url: API_HOST + '/users/' + nusnetId + '/friends',
+      type: 'get',
+      headers: {
+        Authorization: that.accessToken
+      }
+    }).done(function (response) {
+      if (callback) {
+        callback(response.data);
+      }
+    }).fail(function () {
+      alert('Something has went wrong. Please try again later.');
+      if (failCallback) {
+        failCallback(response.data);
+      }
+    });
   },
-  getFriendsTimetable: function (nusnetId, semester, callback) {
-    return callback([
-    {
-      nusnetId: 'a0112345',
-      name: 'HONG LU',
-      email: 'honglu@u.nus.edu',
-      gender: 'Female',
-      faculty: 'Faculty of Science',
-      firstMajor: 'Quantitative Finance (Hons)',
-      secondMajor: '',
-      matriculationYear: '2014',
-      timetable: {
-        year: '2015-2016',
-        semester: 1,
-        queryString: 'CS3210[TUT]=1&CS3210[LEC]=1&CS3216[TUT]=1&CS3216[LEC]=1&CS2105[LEC]=1&CS2105[TUT]=5&LAF3201[TUT]=T6&LAF3201[LEC]=1'
+  getFriendsTimetable: function (nusnetId, callback, failCallback) {
+    $.ajax({
+      url: API_HOST + '/users/' + nusnetId + '/friends/timetable',
+      type: 'get',
+      headers: {
+        Authorization: that.accessToken
       }
-    },
-    {
-      nusnetId: 'a0113615',
-      name: 'LIU XINAN',
-      email: 'xinan@u.nus.edu',
-      gender: 'Male',
-      faculty: 'School of Computing',
-      firstMajor: 'Computer Science (Hons)',
-      secondMajor: '',
-      matriculationYear: '2014',
-      timetable: {
-        year: '2015-2016',
-        semester: 1,
-        queryString: 'CS3216[TUT]=1&CS3216[LEC]=1&CS2105[LEC]=1&CS2105[TUT]=5&CS2106[LAB]=2&CS2106[LEC]=1&CS2106[TUT]=7&CS3244[LEC]=1&CS3244[TUT]=1&CS2309[LEC]=1&CS2309[TUT]=2'
+    }).done(function (response) {
+      if (callback) {
+        callback(response.data);
       }
-    },
-    {
-      nusnetId: 'a0111862',
-      name: 'XU BILI',
-      email: 'bili@u.nus.edu',
-      gender: 'Male',
-      faculty: 'School of Computing',
-      firstMajor: 'Computer Science (Hons)',
-      secondMajor: '',
-      matriculationYear: '2014',
-      timetable: {
-        year: '2015-2016',
-        semester: 1,
-        queryString: 'CS3216[TUT]=1&CS3216[LEC]=1&CS2103T[TUT]=C02&CS2101[SEC]=1&CS2104[LEC]=1&CS2104[TUT]=2&CS3230[LEC]=2'
+    }).fail(function () {
+      alert('Something has went wrong. Please try again later.');
+      if (failCallback) {
+        failCallback(response.data);
       }
-    }]);
+    });
   },
   addFriend: function (nusnetId, friendNusnetId, callback) {
     return callback({
