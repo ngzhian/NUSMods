@@ -8,10 +8,10 @@ var keyboardShortcuts = require('./keyboardShortcuts.json');
 var marked = require('marked');
 
 var controller = {
-  showHelp: function () {
+  showHelp: function() {
     var HelpView = require('./views/HelpView');
-    _.each(keyboardShortcuts, function (category) {
-      _.each(category.shortcuts, function (shortcut) {
+    _.each(keyboardShortcuts, function(category) {
+      _.each(category.shortcuts, function(shortcut) {
         shortcut.description = marked(shortcut.description);
       });
     });
@@ -22,7 +22,7 @@ var controller = {
   }
 };
 
-App.addInitializer(function () {
+App.addInitializer(function() {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {

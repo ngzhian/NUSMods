@@ -31,7 +31,7 @@ module.exports = Marionette.LayoutView.extend({
     urlSharingRegion: '.url-sharing-region'
   },
 
-  initialize: function (options) {
+  initialize: function(options) {
     this.academicYear = options.academicYear;
     this.semester = options.semester;
   },
@@ -86,7 +86,7 @@ module.exports = Marionette.LayoutView.extend({
     }
   },
 
-  modulesChanged: function (model, collection, options) {
+  modulesChanged: function(model, collection, options) {
     if (this.selectedModules.length) {
       Backbone.history.navigate(config.semTimetableFragment(this.semester) +
         '?' + this.selectedModules.toQueryString(), options);

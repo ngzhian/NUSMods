@@ -26,7 +26,7 @@ module.exports = Marionette.ItemView.extend({
     'click a': 'onClick'
   },
 
-  onClick: function (event) {
+  onClick: function(event) {
     if (!this.collection.length) {
       window.alert('No modules to export!');
       return false;
@@ -65,7 +65,7 @@ module.exports = Marionette.ItemView.extend({
           });
           return false;
         }
-        break;
+      break;
       case 'ical-file':
         analytics.track('Timetable', 'Export', 'iCalendar', +this.dlAttrSupported);
         if (this.isSpecialTerm) {
@@ -84,7 +84,7 @@ module.exports = Marionette.ItemView.extend({
           });
           return false;
         }
-        break;
+      break;
       case 'xls-file':
         analytics.track('Timetable', 'Export', 'Excel', +this.dlAttrSupported);
         if (this.dlAttrSupported) {
@@ -99,7 +99,7 @@ module.exports = Marionette.ItemView.extend({
           });
           return false;
         }
-        break;
+      break;
     }
   },
 
@@ -110,7 +110,7 @@ module.exports = Marionette.ItemView.extend({
     this.dlAttrSupported = 'download' in document.createElement('a');
   },
 
-  serializeData: function () {
+  serializeData: function() {
     return {
       isSpecialTerm: this.isSpecialTerm
     };
@@ -269,7 +269,7 @@ module.exports = Marionette.ItemView.extend({
         switch (weeks.length) {
           case 1:
             v.push('RRULE:FREQ=WEEKLY;COUNT=1');
-            break;
+          break;
           case 2:
             if (week.indexOf(',') !== -1) {
               v.push('RRULE:FREQ=WEEKLY;COUNT=2;INTERVAL=' +
@@ -277,7 +277,7 @@ module.exports = Marionette.ItemView.extend({
             } else {
               v.push('RRULE:FREQ=WEEKLY;COUNT=' + (weeks[1] - weeks[0] + 1));
             }
-            break;
+          break;
           default:
             v.push('RRULE:FREQ=WEEKLY;COUNT=' + (weeks[weeks.length - 1] - weeks[0] + 1));
 

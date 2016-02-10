@@ -12,17 +12,17 @@ var navigationItem = App.request('addNavigationItem', {
 });
 
 var controller = {
-  showNews: function (fbPageId) {
+  showNews: function(fbPageId) {
     var NewsView = require('./views/NewsView');
     navigationItem.select();
     if (!fbPageId) {
       fbPageId = newsPagesList[0].id;
     }
-    App.mainRegion.show(new NewsView({ fbPageId: fbPageId }));
+    App.mainRegion.show(new NewsView({fbPageId: fbPageId}));
   }
 };
 
-App.addInitializer(function () {
+App.addInitializer(function() {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {

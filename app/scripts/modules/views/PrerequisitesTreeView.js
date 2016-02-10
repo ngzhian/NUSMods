@@ -8,40 +8,40 @@ var d3 = require('d3');
 
 module.exports = Marionette.LayoutView.extend({
   template: _.template('<div id="nm-prerequisites-tree-canvas"></div>'),
-  onShow: function () {
+  onShow: function() {
     this.drawTree('#nm-prerequisites-tree-canvas');
   },
-  drawTree: function (selector) {
+  drawTree: function(selector) {
     /* jshint latedef: false */
     var prereqs = this.model.get('prereqs');
     var lockedModules = this.model.get('lockedModules');
     var modCode = this.model.get('modCode');
 
-    function isOrAnd (d) { 
-      return (d.name === 'or' || d.name === 'and'); 
+    function isOrAnd(d) {
+      return (d.name === 'or' || d.name === 'and');
     }
-    function modsFilter (d) { 
-      return !isOrAnd(d); 
+    function modsFilter(d) {
+      return !isOrAnd(d);
     }
-    function andOrFilter (d) { 
-      return isOrAnd(d); 
+    function andOrFilter(d) {
+      return isOrAnd(d);
     }
-    function getX (d) { 
-      return isOrAnd(d) ? -25 : -60; 
+    function getX(d) {
+      return isOrAnd(d) ? -25 : -60;
     }
-    function getY (d) { 
-      return isOrAnd(d) ? -17.5 : -35; 
+    function getY(d) {
+      return isOrAnd(d) ? -17.5 : -35;
     }
-    function getHeight (d) { 
-      return isOrAnd(d) ? 35 : 60; 
+    function getHeight(d) {
+      return isOrAnd(d) ? 35 : 60;
     }
-    function getWidth (d) { 
-      return isOrAnd(d) ? 50 : 120; 
+    function getWidth(d) {
+      return isOrAnd(d) ? 50 : 120;
     }
-    function getDefaultTranslation () { 
-      return [(SVGWidth) / 2, 180]; 
+    function getDefaultTranslation() {
+      return [(SVGWidth) / 2, 180];
     }
-    function mouseOver (d) {
+    function mouseOver(d) {
       /* jshint validthis: true */
       if (!isOrAnd(d)) {
         rectangles.filter(modsFilter)
@@ -49,16 +49,16 @@ module.exports = Marionette.LayoutView.extend({
         d3.select(this).selectAll('rect').classed({'active-rect': true, 'opaque': true, 'translucent': false});
       }
     }
-    function mouseOut () {
+    function mouseOut() {
       rectangles.filter(modsFilter)
                 .classed({'active-rect': false, 'opaque': true, 'translucent': false});
     }
-    function clicked (d) {
+    function clicked(d) {
       if (!isOrAnd(d) && d.name in allMods) {
         window.location.href = '/modules/' + d.name;
       }
     }
-    function resized () {
+    function resized() {
       SVGWidth = $(selector).width();
       d3.select('#svg').attr('width', SVGWidth);
 
@@ -66,7 +66,7 @@ module.exports = Marionette.LayoutView.extend({
       d3.select('#drawarea')
         .transition()
         .delay(1)
-        .attr('transform', 'translate('+getDefaultTranslation()+') scale('+interact.scale()+')');
+        .attr('transform', 'translate(' + getDefaultTranslation() + ') scale(' + interact.scale() + ')');
     }
 
     var SVGWidth = $(selector).width();
@@ -82,9 +82,9 @@ module.exports = Marionette.LayoutView.extend({
     var interact = d3.behavior.zoom()
                       .scaleExtent([0.0, 5.0])
                       .size([960, 500])
-                      .on('zoom', function () {
+                      .on('zoom', function() {
                         d3.select('#drawarea')
-                          .attr('transform', 'translate('+d3.event.translate+') scale('+d3.event.scale+')');
+                          .attr('transform', 'translate(' + d3.event.translate + ') scale(' + d3.event.scale + ')');
                       });
     interact(d3.select('svg'));
     canvas = canvas.append('g')
@@ -96,12 +96,12 @@ module.exports = Marionette.LayoutView.extend({
     var tree = d3.layout.tree().nodeSize([130, 130]);
     var nodes = tree.nodes(prereqs);
     var links = tree.links(nodes);
-    var diagonal = d3.svg.diagonal().projection(function (d) { return [d.x, d.y]; });
+    var diagonal = d3.svg.diagonal().projection(function(d) { return [d.x, d.y]; });
 
     var treeLm = d3.layout.tree().nodeSize([130, 130]);
     var nodesLm = treeLm.nodes(lockedModules);
     var linksLm = treeLm.links(nodesLm);
-    var diagonalLm = d3.svg.diagonal().projection(function (d) { return [d.x, -d.y]; });
+    var diagonalLm = d3.svg.diagonal().projection(function(d) { return [d.x, -d.y]; });
 
     canvas.selectAll('.link')
         .data(links)
@@ -122,8 +122,8 @@ module.exports = Marionette.LayoutView.extend({
           .enter()
           .append('g')
           .attr('class', 'node')
-          .attr('transform', function (d) {
-            return 'translate('+d.x+','+d.y+')';
+          .attr('transform', function(d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
           });
 
     canvas.selectAll('.node.locked-modules')
@@ -131,8 +131,8 @@ module.exports = Marionette.LayoutView.extend({
           .enter()
           .append('g')
           .classed({'node': true, 'locked-modules': true})
-          .attr('transform', function (d) {
-            return 'translate('+d.x+','+-d.y+')';
+          .attr('transform', function(d) {
+            return 'translate(' + d.x + ',' + -d.y + ')';
           });
     var nodeAll = canvas.selectAll('.node');
 
@@ -144,25 +144,25 @@ module.exports = Marionette.LayoutView.extend({
                           .attr('rx', 20)
                           .attr('ry', 20)
                           .classed({'rect': true, 'opaque': true})
-                          .attr('nodeValue', function (d) { return d.name; });
+                          .attr('nodeValue', function(d) { return d.name; });
     rectangles.filter(modsFilter)
               .classed({'mod-rect': true, 'non-linkable-mod': true})
-              .filter(function (d) { return d.name in allMods; })
+              .filter(function(d) { return d.name in allMods; })
               .classed({'non-linkable-mod': false, 'linkable-mod': true});
     rectangles.filter(andOrFilter)
               .classed({'andor-rect': true});
-    rectangles.filter(function (d) { return d.name === modCode; })
+    rectangles.filter(function(d) { return d.name === modCode; })
               .classed({'current-mod-rect': true});
 
     var labels = nodeAll.append('text')
-                        .text(function (d) { return d.name; })
+                        .text(function(d) { return d.name; })
                         .classed({'rect-label': true, 'lead': true, 'transparent': true})
-                        .attr('dy', function (d) { return isOrAnd(d)? '10' : ''; });
+                        .attr('dy', function(d) { return isOrAnd(d) ? '10' : ''; });
     labels.filter(andOrFilter)
           .classed({'andor-label': true});
     labels.filter(modsFilter)
           .classed({'non-linkable-mod': true})
-          .filter(function (d) { return d.name in allMods; })
+          .filter(function(d) { return d.name in allMods; })
           .classed({'non-linkable-mod': false, 'linkable-mod': true});
 
     canvas.selectAll('path')

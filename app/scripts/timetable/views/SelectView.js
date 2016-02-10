@@ -20,26 +20,26 @@ module.exports = Marionette.ItemView.extend({
     'input': 'input'
   },
 
-  initialize: function (options) {
+  initialize: function(options) {
     this.semester = options.semester;
   },
 
-  onSelect2Selecting: function (event) {
+  onSelect2Selecting: function(event) {
     event.preventDefault();
     App.request('addModule', this.semester, event.val);
     this.ui.input.select2('focus');
   },
 
-  onShow: function () {
+  onShow: function() {
     var PAGE_SIZE = 50;
     var semester = this.semester;
     this.ui.input.select2({
       multiple: true,
-      query: function (options) {
-        NUSMods.getCodesAndTitles().then(function (data) {
+      query: function(options) {
+        NUSMods.getCodesAndTitles().then(function(data) {
           var i,
             results = [],
-            pushResult = function (i) {
+            pushResult = function(i) {
               var code = data[i].ModuleCode;
               if (!App.request('isModuleSelected', semester, code)) {
                 results.push({
@@ -70,7 +70,7 @@ module.exports = Marionette.ItemView.extend({
       }
     });
 
-    Mousetrap.bind('.', function (ev) {
+    Mousetrap.bind('.', function(ev) {
       analytics.track('Search', 'Keyboard', 'Timetable Search');
       $('.timetable-input .select2-input').focus();
       ev.preventDefault();

@@ -12,27 +12,27 @@ var moduleFinderNamespace = config.namespaces.moduleFinder + ':';
 
 module.exports = Marionette.CollectionView.extend({
   childView: FacetView,
-  childViewOptions: function (facet) {
+  childViewOptions: function(facet) {
     return {
       collection: facet.get('filters')
     };
   },
 
-  onReset: function () {
+  onReset: function() {
     this.$window.off('scroll', this.onScroll).scroll(this.onScroll);
   },
 
-  onScroll: function () {
+  onScroll: function() {
     if (this.$window.scrollTop() + this.$window.height() + this.threshold >= this.$document.height()) {
       if (!this.collection.addNextPage()) {
         this.$window.off('scroll', this.onScroll);
       }
     }
   },
-  onShow: function () {
+  onShow: function() {
     localforage.getItem(moduleFinderNamespace + 'facets', function(data) {
       if (data) {
-        _.each(data, function (id) {
+        _.each(data, function(id) {
           var $panel = $('#' + id);
           $panel.addClass('in');
           $panel.parent().find('.nm-caret').addClass('nm-caret-down');
@@ -40,7 +40,7 @@ module.exports = Marionette.CollectionView.extend({
       }
     });
 
-    $('.collapse').on('shown.bs.collapse hidden.bs.collapse', function () {
+    $('.collapse').on('shown.bs.collapse hidden.bs.collapse', function() {
       localforage.setItem(moduleFinderNamespace + 'facets', _.pluck($('.collapse.in'), 'id'));
     });
   },
@@ -48,11 +48,11 @@ module.exports = Marionette.CollectionView.extend({
     'click': 'updateFilters'
   },
 
-  updateFilters: function () {
+  updateFilters: function() {
     var selectedFilters = {};
-    _.each(this.collection.models, function (facet) {
+    _.each(this.collection.models, function(facet) {
       var filters = [];
-      _.each(facet.get('filters').selected, function (filter) {
+      _.each(facet.get('filters').selected, function(filter) {
         filters.push(filter.get('label'));
       });
       if (filters.length) {
@@ -64,13 +64,13 @@ module.exports = Marionette.CollectionView.extend({
     this.persistFilters(selectedFilters);
   },
 
-  clearFilters: function () {
+  clearFilters: function() {
     $('.nm-module-filter').removeClass('in');
     $('.nm-caret').removeClass('nm-caret-down');
 
-    _.each(this.collection.models, function (item) {
+    _.each(this.collection.models, function(item) {
       var itemFilters = item.get('filters').models;
-      _.each(itemFilters, function (filter) {
+      _.each(itemFilters, function(filter) {
         if (filter.get('selected')) {
           filter.deselect();
         }
@@ -82,22 +82,22 @@ module.exports = Marionette.CollectionView.extend({
   },
 
   onFilter: function(options) {
-    var filteredCollection = this.collection.findWhere({key: options.type}).get('filters'); 
+    var filteredCollection = this.collection.findWhere({key: options.type}).get('filters');
     var filteredModel = filteredCollection.findWhere({label: options.value});
     filteredModel.model.collection.selectNone();
     filteredModel.model.toggleSelected();
     this.updateFilters();
   },
 
-  persistFilters: function (value) {
+  persistFilters: function(value) {
     localforage.setItem(moduleFinderNamespace + 'filters', value);
   },
 
-  persistFacets: function (value) {
+  persistFacets: function(value) {
     localforage.setItem(moduleFinderNamespace + 'facets', value);
   },
 
-  initialize: function (options) {
+  initialize: function(options) {
     _.bindAll(this, 'onScroll');
 
     this.$window = $(window);

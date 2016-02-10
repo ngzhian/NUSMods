@@ -20,45 +20,45 @@ module.exports = Marionette.ItemView.extend({
     'input': 'input'
   },
 
-  onMouseenter: function (event) {
+  onMouseenter: function(event) {
     var button = $(event.currentTarget);
     button.children('span').hide();
     button.children('i').removeClass('hidden');
   },
 
-  onMouseleave: function (event) {
+  onMouseleave: function(event) {
     var button = $(event.currentTarget);
     button.children('span').show();
     button.children('i').addClass('hidden');
   },
 
-  onSelect2Open: function () {
+  onSelect2Open: function() {
     $('#select2-drop')
       .on('mouseenter', 'a', this.onMouseenter)
       .on('mouseleave', 'a', this.onMouseleave);
   },
 
-  onSelect2Selecting: function (event) {
+  onSelect2Selecting: function(event) {
     event.preventDefault();
     Backbone.history.navigate('venues/' + event.val, {trigger: true});
     this.ui.input.select2('close');
     this.$(':focus').blur();
   },
 
-  onShow: function () {
+  onShow: function() {
     _.bindAll(this, 'onSelect2Open');
 
     var PAGE_SIZE = 50;
     var venueList = this.model.get('venuesList');
     this.ui.input.select2({
       multiple: true,
-      formatResult: function (object) {
+      formatResult: function(object) {
         return selectResultTemplate(object);
       },
-      query: function (options) {
+      query: function(options) {
         var i,
           results = [],
-          pushResult = function (i) {
+          pushResult = function(i) {
             var name = venueList[i];
             return results.push({
               id: name,

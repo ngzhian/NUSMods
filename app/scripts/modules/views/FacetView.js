@@ -13,7 +13,7 @@ module.exports = Marionette.CompositeView.extend({
     caret: '.nm-caret'
   },
   events: {
-    'click .nm-section-heading': function () {
+    'click .nm-section-heading': function() {
       this.ui.caret.toggleClass('nm-caret-down');
     }
   }

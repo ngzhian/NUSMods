@@ -2,7 +2,7 @@
 
 var $ = require('jquery');
 
-$(function () {
+$(function() {
   function createRipple(x, y) {
     var $ripple = $('<span class="ripple"></span>');
     $('body').append($ripple);
@@ -13,7 +13,7 @@ $(function () {
         left: x - 32 + 'px',
       })
       .addClass('rippling')
-      .one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
+      .one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
         $(this).remove();
       });
   }

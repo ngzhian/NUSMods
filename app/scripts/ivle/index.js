@@ -10,14 +10,14 @@ var navigationItem = App.request('addNavigationItem', {
 });
 
 var controller = {
-  showIvle: function () {
+  showIvle: function() {
     var IvleView = require('./views/IvleView');
     navigationItem.select();
     App.mainRegion.show(new IvleView());
   }
 };
 
-App.addInitializer(function () {
+App.addInitializer(function() {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {

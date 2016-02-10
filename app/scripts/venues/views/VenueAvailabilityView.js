@@ -8,18 +8,18 @@ var timify = require('../../common/utils/timify');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
-  initialize: function () {
+  initialize: function() {
 
   },
   events: {
     'click .js-nm-available-venue-search': 'showAvailableVenues'
   },
-  onRender: function () {
+  onRender: function() {
     $('.js-nm-venue-time-day-input').val(this.model.get('venueDay'));
     $('.js-nm-venue-time-start-input').val(this.model.get('venueStartTime'));
     $('.js-nm-venue-time-end-input').val(this.model.get('venueEndTime'));
   },
-  showAvailableVenues: function () {
+  showAvailableVenues: function() {
     var day = $('.js-nm-venue-time-day-input').val();
     var startTime = $('.js-nm-venue-time-start-input').val();
     var endTime = $('.js-nm-venue-time-end-input').val();
@@ -39,7 +39,7 @@ module.exports = Marionette.LayoutView.extend({
       return [];
     }
 
-    var availableVenues = _.filter(venuesList, function (venueName) {
+    var availableVenues = _.filter(venuesList, function(venueName) {
       var availability = venues[venueName][dayIndex].availability;
       for (var i = startIndex; i <= endIndex; i++) {
         if (availability[timify.convertIndexToTime(i)] === 'occupied') {
@@ -49,10 +49,10 @@ module.exports = Marionette.LayoutView.extend({
       return true;
     });
 
-    var groupedVenues = _.groupBy(availableVenues, function (venue) {
+    var groupedVenues = _.groupBy(availableVenues, function(venue) {
       return venue.charAt(0).toUpperCase();
     });
-    var groupedVenuesList = _.map(_.pairs(groupedVenues), function (pair) {
+    var groupedVenuesList = _.map(_.pairs(groupedVenues), function(pair) {
       return {
         letter: pair[0],
         venues: pair[1]

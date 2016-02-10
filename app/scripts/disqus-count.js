@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 'use strict';
 var DISQUSWIDGETS, disqus_domain, disqus_shortname;
-typeof DISQUSWIDGETS === 'undefined' && (DISQUSWIDGETS = function () {
+typeof DISQUSWIDGETS === 'undefined' && (DISQUSWIDGETS = function() {
   var c = {};
   var n = document.getElementsByTagName('HEAD')[0] || document.body;
   var i = {};
@@ -11,7 +11,7 @@ typeof DISQUSWIDGETS === 'undefined' && (DISQUSWIDGETS = function () {
   };
   c.domain = 'disqus.com';
   c.forum = '';
-  c.getCount = function () {
+  c.getCount = function() {
     i = {};
     var a = encodeURIComponent;
     var b = document.getElementsByTagName('span');
@@ -38,7 +38,7 @@ typeof DISQUSWIDGETS === 'undefined' && (DISQUSWIDGETS = function () {
     }
     d.sort();
 
-    for (a = d.slice(g, j); a.length; ) {
+    for (a = d.slice(g, j); a.length;) {
       b = document.createElement('script');
       b.async = !0;
       b.src = o + a.join('&');
@@ -48,18 +48,18 @@ typeof DISQUSWIDGETS === 'undefined' && (DISQUSWIDGETS = function () {
       a = d.slice(g, j);
     }
   };
-  c.displayCount = function (a) {
-    for (var b, c, d, g = a.counts, a = a.text.comments; b = g.shift(); ) {
+  c.displayCount = function(a) {
+    for (var b, c, d, g = a.counts, a = a.text.comments; b = g.shift();) {
       if (c = i[b.id]) {
         switch (b.comments) {
           case 0:
-          d = a.zero;
+            d = a.zero;
           break;
           case 1:
-          d = a.one;
+            d = a.one;
           break;
           default:
-          d = a.multiple;
+            d = a.multiple;
         }
         b = d.replace('{num}', b.comments);
         c = c.elements;

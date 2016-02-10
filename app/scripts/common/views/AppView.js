@@ -22,10 +22,10 @@ module.exports = Backbone.View.extend({
 
   events: {
     'click a[href]:not([data-bypass])': 'hijackLinks',
-    'mouseup a[href]:not([data-bypass])' : 'removeFocus',
+    'mouseup a[href]:not([data-bypass])': 'removeFocus',
   },
 
-  hijackLinks: function (event) {
+  hijackLinks: function(event) {
     // Ref: https://github.com/backbone-boilerplate/backbone-boilerplate/blob/85723839dbab6787d69eedcbbea05e1d59960eff/app/app.js#L52
 
     // Do not hijack if modifier key was pressed when the event fired.
@@ -35,7 +35,7 @@ module.exports = Backbone.View.extend({
 
     // Get the absolute anchor href.
     var $link = $(event.currentTarget);
-    var href = { prop: $link.prop('href'), attr: $link.attr('href') };
+    var href = {prop: $link.prop('href'), attr: $link.attr('href')};
     // Get the absolute root.
     var root = location.protocol + '//' + location.host + '/';
 
@@ -56,7 +56,7 @@ module.exports = Backbone.View.extend({
     $(event.currentTarget).blur();
   },
 
-  initialize: function () {
+  initialize: function() {
     $.ajaxSetup({
       cache: true
     });
@@ -69,7 +69,7 @@ module.exports = Backbone.View.extend({
     $.fn.qtip.defaults.show.solo = true;
     $.fn.qtip.defaults.style.classes = 'qtip-bootstrap';
 
-    NUSMods.getLastModified().then(function (lastModified) {
+    NUSMods.getLastModified().then(function(lastModified) {
       $('#correct-as-at').text((new Date(lastModified)).toString().slice(0, 21));
     });
 
@@ -97,8 +97,8 @@ module.exports = Backbone.View.extend({
 
     var that = this;
 
-    _.each(keyboardNavigationMappings, function (value, key) {
-      Mousetrap.bind(key, function () {
+    _.each(keyboardNavigationMappings, function(value, key) {
+      Mousetrap.bind(key, function() {
         analytics.track('Navigation', 'Keyboard', value.slice(1));
         that.navigateWithScrollTop(value, true);
       });
@@ -113,8 +113,8 @@ module.exports = Backbone.View.extend({
       r: '#reviews'
     };
 
-    _.each(keyboardAnchorMappings, function (value, key) {
-      Mousetrap.bind(key, function () {
+    _.each(keyboardAnchorMappings, function(value, key) {
+      Mousetrap.bind(key, function() {
         var section = value.slice(1);
         analytics.track('Module ' + section, 'Visit - Keyboard', section);
         if (modulePageRegex.test(window.location.pathname)) {
@@ -123,13 +123,13 @@ module.exports = Backbone.View.extend({
       });
     });
 
-    Mousetrap.bind(['x'], function () {
+    Mousetrap.bind(['x'], function() {
       var newMode = themePicker.toggleMode();
       analytics.track('event', 'Mode', 'Change mode using keyboard', newMode);
       if (modulePageRegex.test(window.location.pathname) && window.DISQUS) {
         window.DISQUS.reset({
           reload: true,
-          config: function () {
+          config: function() {
             /* jshint camelcase: false */
             this.page.identifier = window.disqus_identifier;
             this.page.title = window.disqus_title;
@@ -139,7 +139,7 @@ module.exports = Backbone.View.extend({
       }
     });
 
-    Mousetrap.bind(['left', 'right'], function (e) {
+    Mousetrap.bind(['left', 'right'], function(e) {
       var newTheme = themePicker.selectNextTheme(e.keyCode === 37 ? 'Left' : 'Right');
       analytics.track('Theme', 'Change theme using keyboard', newTheme, e.keyCode === 37 ? 1 : 0);
       return false;
@@ -154,9 +154,9 @@ module.exports = Backbone.View.extend({
       events: {
         show: function() {
           analytics.track('Bookmarks', 'Display bookmark');
-          App.request('getBookmarks', function (modules) {
+          App.request('getBookmarks', function(modules) {
             var modulesList = [];
-            _.each(modules, function (module) {
+            _.each(modules, function(module) {
               modulesList.push({'module': module});
             });
             var bookmarksCollection = new Backbone.Collection(modulesList);
@@ -168,25 +168,24 @@ module.exports = Backbone.View.extend({
     });
 
     // For sidebar navigations
-    $('.navbar-toggle').click(function (e) {
+    $('.navbar-toggle').click(function(e) {
       e.preventDefault();
       $('body').toggleClass('js-toggled');
     });
 
-    $(window).resize(function () {
+    $(window).resize(function() {
       $('body').removeClass('js-toggled');
     });
 
     attachFastClick(document.body);
 
-
-    (function () {
+    (function() {
       // $('.cors-round-text').html(corsify.determineRound(Date.now()));
       // $('.cors-round-container').addClass('animated bounceInUp shown');
       // $('.js-nm-contest-alert').addClass('animated bounceInDown nm-force-show');
       var week = nusmoderator.academicCalendar.currentAcadWeek(new Date());
       var thisWeekText = 'AY20' + week.year + ', ' + week.sem + ', ';
-      if (week.type !== 'Instructional'){ // hide 'Instructional'
+      if (week.type !== 'Instructional') { // hide 'Instructional'
         thisWeekText += week.type;
       }
       thisWeekText += ' Week';
@@ -197,11 +196,11 @@ module.exports = Backbone.View.extend({
     })();
   },
 
-  navigateWithScrollTop: function (location, trigger) {
+  navigateWithScrollTop: function(location, trigger) {
     $('body').removeClass('js-toggled');
     Backbone.history.navigate(location, {trigger: trigger});
     // Hack: Scroll to top of page after navigation
-    setTimeout(function () {
+    setTimeout(function() {
       window.scrollTo(0, 0);
     }, 0);
   }

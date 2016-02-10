@@ -9,7 +9,7 @@ module.exports = Backbone.Model.extend({
     time: 'No Exam'
   },
 
-  initialize: function () {
+  initialize: function() {
     // Time is in the dd-mm-yyyy h:mm tt format.
     var time = this.get('examStr');
     if (time) {

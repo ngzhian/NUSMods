@@ -8,7 +8,7 @@ var SelectedModulesController = require('../../common/controllers/SelectedModule
 // Common terminology throughout project is to refer to lessons instead of
 // classes, as class is a keyword in JavaScript.
 module.exports = Backbone.Model.extend({
-  initialize: function () {
+  initialize: function() {
     var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(this.get('queryString'));
     // TODO: Change semester
     var that = this;
@@ -18,7 +18,7 @@ module.exports = Backbone.Model.extend({
       saveOnChange: false
     });
 
-    _.each(selectedModules, function (module) {
+    _.each(selectedModules, function(module) {
       selectedModulesController.selectedModules.add({
         ModuleCode: module.ModuleCode,
         Semester: that.get('semester')
@@ -26,8 +26,8 @@ module.exports = Backbone.Model.extend({
     });
 
     this.set('moduleInformation', selectedModulesController.selectedModules);
-    
-    selectedModulesController.selectedModules.on('change', function () {
+
+    selectedModulesController.selectedModules.on('change', function() {
       that.trigger('change');
     });
   }

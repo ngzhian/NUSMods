@@ -24,7 +24,7 @@ function formatTime(date) {
 }
 
 module.exports = {
-  determineRound: function (nowDate) {
+  determineRound: function(nowDate) {
     // TODO: Write a CORS Marionette view to separate HTML from CORS Logic
     var start = 'Current CORS Round: <strong>';
     for (var i = 0; i < corsSchedule.length; i++) {

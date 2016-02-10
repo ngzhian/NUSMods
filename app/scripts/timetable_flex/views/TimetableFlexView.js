@@ -12,7 +12,7 @@ require('bootstrap/popover');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
-  initialize: function () {
+  initialize: function() {
     var that = this;
 
     var lessonsList = this.model.get('lessonsList');
@@ -20,9 +20,9 @@ module.exports = Marionette.LayoutView.extend({
 
     this.model.set('dayAvailability', dayAvailability);
     this.model.set('fiveDayLayout', false);
-    _.each(dayAvailability, function (day) {
-      var range = _.map(_.range(timify.convertTimeToIndex('0800'), 
-                                timify.convertTimeToIndex('2400')), function () {
+    _.each(dayAvailability, function(day) {
+      var range = _.map(_.range(timify.convertTimeToIndex('0800'),
+                                timify.convertTimeToIndex('2400')), function() {
         return {
           width: 1,
           module: '',
@@ -33,7 +33,7 @@ module.exports = Marionette.LayoutView.extend({
       var eightAmIndex = timify.convertTimeToIndex('0800');
 
       if (that.model.get('mergeMode')) {
-        _.each(day.lessons, function (lesson) {
+        _.each(day.lessons, function(lesson) {
           var startIndex = timify.convertTimeToIndex(lesson.StartTime) - eightAmIndex;
           var endIndex = timify.convertTimeToIndex(lesson.EndTime) - eightAmIndex;
           for (var i = startIndex; i < endIndex; i++) {
@@ -50,8 +50,8 @@ module.exports = Marionette.LayoutView.extend({
           }
         });
       } else {
-        _.each(day.lessons, function (lesson) {
-          
+        _.each(day.lessons, function(lesson) {
+
           var startIndex = timify.convertTimeToIndex(lesson.StartTime) - eightAmIndex;
           var endIndex = timify.convertTimeToIndex(lesson.EndTime) - eightAmIndex;
           var width = endIndex - startIndex;
@@ -75,34 +75,34 @@ module.exports = Marionette.LayoutView.extend({
         }
       }
       day.timetable = finalRange;
-    });  
+    });
     if (dayAvailability[5].lessons.length === 0) {
       // Remove Saturday if empty
       dayAvailability.splice(5, 1);
       this.model.set('fiveDayLayout', true);
     }
   },
-  onShow: function () {
+  onShow: function() {
     $('.js-nm-timetable-overlap-cell').tooltip();
   },
-  convertToDayAvailability: function (lessonsList) {
+  convertToDayAvailability: function(lessonsList) {
     var days = timify.getSchoolDays();
     var dayAvailability = [];
-    _.each(days, function (day) {
-      var lessons = _.filter(lessonsList, function (lesson) {
+    _.each(days, function(day) {
+      var lessons = _.filter(lessonsList, function(lesson) {
         return lesson.DayText === day;
       });
-      lessons = _.sortBy(lessons, function (lesson) {
+      lessons = _.sortBy(lessons, function(lesson) {
         return lesson.StartTime + lesson.EndTime;
       });
 
-      var timeRange = _.range(timify.convertTimeToIndex('0800'), 
+      var timeRange = _.range(timify.convertTimeToIndex('0800'),
                               timify.convertTimeToIndex('2400'));
-      var availability = _.object(_.map(timeRange, function (index) {
+      var availability = _.object(_.map(timeRange, function(index) {
         return [timify.convertIndexToTime(index), 'vacant'];
       }));
 
-      _.each(lessons, function (lesson) {
+      _.each(lessons, function(lesson) {
         var startIndex = timify.convertTimeToIndex(lesson.StartTime);
         var endIndex = timify.convertTimeToIndex(lesson.EndTime) - 1;
         for (var i = startIndex; i <= endIndex; i++) {

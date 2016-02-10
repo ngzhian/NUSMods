@@ -9,21 +9,21 @@ var TimetableFlexView = require('../../timetable_flex/views/TimetableFlexView');
 
 module.exports = Marionette.LayoutView.extend({
   template: template,
-  initialize: function () {
+  initialize: function() {
 
   },
   regions: {
     venueSearchRegion: '.nm-venue-search',
     venueTimetableRegion: '.nm-venue-information-timetable'
   },
-  onShow: function () {
+  onShow: function() {
     if (this.model.get('selectedVenueName')) {
       this.showAvailabilityForVenue(this.model.get('selectedVenueName'));
     }
     var _this = this;
     this.venueSearchRegion.show(new VenueSelectView({model: _this.model}));
   },
-  showAvailabilityForVenue: function (venueName) {
+  showAvailabilityForVenue: function(venueName) {
     if (venueName !== '') {
       Backbone.history.navigate('venues/' + venueName);
     }
@@ -37,7 +37,7 @@ module.exports = Marionette.LayoutView.extend({
     this.model.set('selectedVenue', selectedVenue);
     this.render();
 
-    var lessons = _.reduce(_.pluck(selectedVenue, 'lessons'), function (memo, list) {
+    var lessons = _.reduce(_.pluck(selectedVenue, 'lessons'), function(memo, list) {
       return memo.concat(list);
     }, []);
 

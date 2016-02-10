@@ -41,7 +41,7 @@ var navigationCollection = new NavigationCollection();
 var navigationView = new NavigationView({collection: navigationCollection});
 App.navigationRegion.show(navigationView);
 
-App.reqres.setHandler('addNavigationItem', function (navigationItem) {
+App.reqres.setHandler('addNavigationItem', function(navigationItem) {
   return navigationCollection.add(navigationItem);
 });
 
@@ -55,50 +55,50 @@ for (var i = 0; i < 5; i++) {
   });
 }
 
-App.reqres.setHandler('selectedModules', function (sem) {
+App.reqres.setHandler('selectedModules', function(sem) {
   return selectedModulesControllers[sem - 1].selectedModules;
 });
-App.reqres.setHandler('addModule', function (sem, id, options) {
+App.reqres.setHandler('addModule', function(sem, id, options) {
   return selectedModulesControllers[sem - 1].selectedModules.add({
     ModuleCode: id,
     Semester: sem
   }, options);
 });
-App.reqres.setHandler('removeModule', function (sem, id) {
+App.reqres.setHandler('removeModule', function(sem, id) {
   var selectedModules = selectedModulesControllers[sem - 1].selectedModules;
   return selectedModules.remove(selectedModules.get(id));
 });
-App.reqres.setHandler('isModuleSelected', function (sem, id) {
+App.reqres.setHandler('isModuleSelected', function(sem, id) {
   return !!selectedModulesControllers[sem - 1].selectedModules.get(id);
 });
-App.reqres.setHandler('displayLessons', function (sem, id, display) {
+App.reqres.setHandler('displayLessons', function(sem, id, display) {
   _.each(selectedModulesControllers[sem - 1].timetable.where({
     ModuleCode: id
-  }), function (lesson) {
+  }), function(lesson) {
     lesson.set('display', display);
   });
 });
 
 var bookmarkedModulesNamespace = config.namespaces.bookmarkedModules + ':';
 
-App.reqres.setHandler('getBookmarks', function (callback) {
+App.reqres.setHandler('getBookmarks', function(callback) {
   if (!callback) {
     return;
   }
-  localforage.getItem(bookmarkedModulesNamespace, function (modules) {
+  localforage.getItem(bookmarkedModulesNamespace, function(modules) {
     callback(modules);
   });
 });
-App.reqres.setHandler('addBookmark', function (id) {
-  localforage.getItem(bookmarkedModulesNamespace, function (modules) {
+App.reqres.setHandler('addBookmark', function(id) {
+  localforage.getItem(bookmarkedModulesNamespace, function(modules) {
     if (!_.contains(modules, id)) {
       modules.push(id);
     }
     localforage.setItem(bookmarkedModulesNamespace, modules);
   });
 });
-App.reqres.setHandler('deleteBookmark', function (id) {
-  localforage.getItem(bookmarkedModulesNamespace, function (modules) {
+App.reqres.setHandler('deleteBookmark', function(id) {
+  localforage.getItem(bookmarkedModulesNamespace, function(modules) {
     var index = modules.indexOf(id);
     if (index > -1) {
       modules.splice(index, 1);
@@ -107,12 +107,12 @@ App.reqres.setHandler('deleteBookmark', function (id) {
   });
 });
 
-App.on('start', function () {
+App.on('start', function() {
   var AppView = require('./common/views/AppView');
 
   new Marionette.AppRouter({
     routes: {
-      '*default': function () {
+      '*default': function() {
         Backbone.history.navigate('timetable', {trigger: true, replace: true});
       }
     }
@@ -140,7 +140,7 @@ App.on('start', function () {
   Promise.all(_.map(_.range(1, 5), function(semester) {
     var semTimetableFragment = config.semTimetableFragment(semester);
     return localforage.getItem(semTimetableFragment + ':queryString')
-      .then(function (savedQueryString) {
+      .then(function(savedQueryString) {
       if ('/' + semTimetableFragment === window.location.pathname) {
         var queryString = window.location.search.slice(1);
         if (queryString) {
@@ -155,17 +155,17 @@ App.on('start', function () {
         }
       }
       var selectedModules = TimetableModuleCollection.fromQueryStringToJSON(savedQueryString);
-      return Promise.all(_.map(selectedModules, function (module) {
+      return Promise.all(_.map(selectedModules, function(module) {
         return App.request('addModule', semester, module.ModuleCode, module);
       }));
     });
-  }).concat([NUSMods.generateModuleCodes()])).then(function () {
+  }).concat([NUSMods.generateModuleCodes()])).then(function() {
     new AppView();
 
     Backbone.history.start({pushState: true});
   });
 
-  localforage.getItem(bookmarkedModulesNamespace, function (modules) {
+  localforage.getItem(bookmarkedModulesNamespace, function(modules) {
     if (!modules) {
       localforage.setItem(bookmarkedModulesNamespace, []);
     }

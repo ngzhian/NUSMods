@@ -8,7 +8,7 @@ var Backbone = require('backbone');
 // usual.
 var argumentsQueue = [];
 
-var ga = function (methodName, fieldName) {
+var ga = function(methodName, fieldName) {
   if (methodName === 'set' && /^dimension\d+$/.test(fieldName)) {
     window.ga.apply(null, arguments);
   } else {
@@ -33,18 +33,18 @@ Backbone.History.prototype.loadUrl = function() {
 };
 
 module.exports = {
-  flush: function () {
+  flush: function() {
     ga = window.ga;
     for (var i = 0; i < argumentsQueue.length; i++) {
       ga.apply(null, argumentsQueue[i]);
     }
     argumentsQueue = [];
   },
-  set: function () {
+  set: function() {
     Array.prototype.unshift.call(arguments, 'set');
     ga.apply(null, arguments);
   },
-  track: function () {
+  track: function() {
     Array.prototype.unshift.call(arguments, 'send', 'event');
     ga.apply(null, arguments);
   }

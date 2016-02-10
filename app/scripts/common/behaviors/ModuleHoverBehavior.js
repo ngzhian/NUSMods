@@ -6,11 +6,11 @@ var Marionette = require('backbone.marionette');
 
 module.exports = Marionette.Behavior.extend({
   events: {
-    'mouseenter a[href^=\'/modules/\']' : 'showDetails',
+    'mouseenter a[href^=\'/modules/\']': 'showDetails',
     'click a[href^=\'/modules/\']': 'destroyDetails'
   },
 
-  showDetails: function (event) {
+  showDetails: function(event) {
     var curr = event.currentTarget;
 
     var NUSMods = require('../../nusmods');
@@ -19,7 +19,7 @@ module.exports = Marionette.Behavior.extend({
     var reqModuleCode = $(curr).text();
 
     $(curr).qtip({
-      content: function (event, api) {
+      content: function(event, api) {
         NUSMods.getMod(reqModuleCode).then(function(data) {
           var reqModuleModel = new ModuleModel(data);
 
@@ -44,7 +44,7 @@ module.exports = Marionette.Behavior.extend({
         at: 'top center'
       },
       events: {
-        show: function (event) {
+        show: function(event) {
           // Prevents tags with data-no-module-qtip from loading
           if (curr.hasAttribute('data-no-module-qtip')) {
             event.preventDefault();
@@ -53,7 +53,7 @@ module.exports = Marionette.Behavior.extend({
       }
     }, event);
   },
-  destroyDetails: function (event) {
+  destroyDetails: function(event) {
     var curr = event.currentTarget;
     $(curr).qtip('destroy', true);
   }

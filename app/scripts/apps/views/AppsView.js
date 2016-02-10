@@ -13,7 +13,7 @@ module.exports = Marionette.LayoutView.extend({
   regions: {
     appsListRegion: '.nm-news-apps-container'
   },
-  onShow: function () {
+  onShow: function() {
     var that = this;
     $.ajax({
       type: 'GET',
@@ -21,7 +21,7 @@ module.exports = Marionette.LayoutView.extend({
       url: APPS_LIST_URL,
       dataType: 'jsonp',
       jsonpCallback: 'callback',
-      success: function (data) {
+      success: function(data) {
         that.appsListRegion.show(new AppsListView({
           collection: new Backbone.Collection(data)
         }));

@@ -10,7 +10,7 @@ var padTwo = require('../utils/padTwo');
 // SGT time zone and interpret as UTC time, then use the getUTC* methods so
 // that they will correspond to Singapore time regardless of the local time
 // zone.
-var examStr = function (exam) {
+var examStr = function(exam) {
   if (exam) {
     var date = new Date(exam.slice(0,16) + 'Z');
     var hours = date.getUTCHours();
@@ -26,11 +26,11 @@ var examStr = function (exam) {
 
 var DESCRIPTION_LIMIT = 40;
 
-var shortenDescription = function (desc) {
+var shortenDescription = function(desc) {
   return desc.split(' ').splice(0, DESCRIPTION_LIMIT).join(' ');
 };
 
-var workloadify = function (workload) {
+var workloadify = function(workload) {
   var workloadArray = workload.split('-');
   var workloadComponents = {
     lectureHours: workloadArray[0],
@@ -39,7 +39,7 @@ var workloadify = function (workload) {
     projectHours: workloadArray[3],
     preparationHours: workloadArray[4]
   };
-  _.each(workloadComponents, function (value, key) {
+  _.each(workloadComponents, function(value, key) {
     workloadComponents[key] = parseInt(value);
   });
   return workloadComponents;
@@ -75,7 +75,7 @@ module.exports = Backbone.Model.extend({
       this.set('linkedPreclusion', modulify.linkifyModules(preclusion));
     }
 
-    _.each(this.get('History'), function (history) {
+    _.each(this.get('History'), function(history) {
       history.semesterName = semesterNames[history.Semester - 1];
       history.examStr = examStr(history.ExamDate);
       if (history.examStr) {
@@ -86,7 +86,7 @@ module.exports = Backbone.Model.extend({
       var timetable = history.Timetable;
       if (timetable) {
         var timetableTypes = [];
-        _.each(timetable, function (lesson) {
+        _.each(timetable, function(lesson) {
           if (timetableTypes.indexOf(lesson.LessonType) < 0) {
             timetableTypes.push(lesson.LessonType);
           }
@@ -120,16 +120,16 @@ module.exports = Backbone.Model.extend({
           'Recitation': 'Recitations'
         };
 
-        timetableTypes = _.sortBy(timetableTypes, function (type) {
+        timetableTypes = _.sortBy(timetableTypes, function(type) {
           return AVAILABLE_TYPES.indexOf(type);
         });
 
         var formattedTimetable = [];
-        _.each(timetableTypes, function (type) {
-          var lessons = _.filter(timetable, function (lesson) {
+        _.each(timetableTypes, function(type) {
+          var lessons = _.filter(timetable, function(lesson) {
             return lesson.LessonType === type;
           });
-          lessons = _.sortBy(lessons, function (lesson) {
+          lessons = _.sortBy(lessons, function(lesson) {
             // The default sort is alphabetical, which is not ideal becase
             // classes appear in this order: T1, T10, T2, T3, ...
             // Hence pad with zero then sort alphabetically (assuming < 100 classes)
@@ -159,22 +159,22 @@ module.exports = Backbone.Model.extend({
       var formattedCorsBiddingStats = [];
 
       var semesters = [];
-      _.each(corsBiddingStats, function (stats) {
+      _.each(corsBiddingStats, function(stats) {
         var sem = stats.AcadYear + ',' + stats.Semester;
         if (semesters.indexOf(sem) < 0) {
           semesters.push(sem);
         }
       });
 
-      _.each(semesters, function (sem) {
+      _.each(semesters, function(sem) {
         var parts = sem.split(',');
         var acadYear = parts[0];
         var semester = parts[1];
-        var stats = _.filter(corsBiddingStats, function (stat) {
+        var stats = _.filter(corsBiddingStats, function(stat) {
           return stat.AcadYear === acadYear && stat.Semester === semester;
         });
 
-        stats = _.map(stats, function (stat) {
+        stats = _.map(stats, function(stat) {
           stat = _.omit(stat, ['AcadYear', 'Semester']);
           return stat;
         });
@@ -187,7 +187,7 @@ module.exports = Backbone.Model.extend({
       this.set('FormattedCorsBiddingStats', formattedCorsBiddingStats);
     }
 
-    this.on('change:ExamDate', function () {
+    this.on('change:ExamDate', function() {
       this.set('examStr', examStr(this.get('ExamDate')));
     });
 

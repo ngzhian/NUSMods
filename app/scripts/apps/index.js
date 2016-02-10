@@ -10,14 +10,14 @@ var navigationItem = App.request('addNavigationItem', {
 });
 
 var controller = {
-  showApps: function () {
+  showApps: function() {
     var AppsView = require('./views/AppsView');
     navigationItem.select();
     App.mainRegion.show(new AppsView());
   }
 };
 
-App.addInitializer(function () {
+App.addInitializer(function() {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {

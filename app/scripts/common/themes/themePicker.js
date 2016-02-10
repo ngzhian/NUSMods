@@ -8,10 +8,10 @@ var config = require('../../common/config');
 var preferencesNamespace = config.namespaces.preferences + ':';
 
 module.exports = {
-  getThemeOptions: function () {
+  getThemeOptions: function() {
     return themeOptions;
   },
-  selectNextTheme: function (direction) {
+  selectNextTheme: function(direction) {
     var $body = $('body');
     var allThemes = _.pluck(themeOptions, 'value');
     var currentTheme = $body.attr('data-theme');
@@ -23,7 +23,7 @@ module.exports = {
     this.applyTheme(newTheme);
     return newTheme;
   },
-  selectRandomTheme: function () {
+  selectRandomTheme: function() {
     var allThemes = _.pluck(themeOptions, 'value');
     var currentTheme = $('body').attr('data-theme');
     var newTheme;
@@ -34,14 +34,14 @@ module.exports = {
 
     this.applyTheme(newTheme);
   },
-  applyTheme: function (newTheme) {
+  applyTheme: function(newTheme) {
     var $themeOptions = $('#theme-options');
     if ($themeOptions.length) {
       $themeOptions.val(newTheme);
     }
     this.updateAppearance('theme', newTheme);
   },
-  toggleMode: function () {
+  toggleMode: function() {
     var $body = $('body');
     var newMode = $body.attr('data-mode') === 'default' ? 'slate' : 'default';
 
@@ -56,14 +56,14 @@ module.exports = {
     this.updateAppearance('mode', newMode);
     return newMode;
   },
-  updateAppearance: function (property, value) {
+  updateAppearance: function(property, value) {
     localforage.setItem(preferencesNamespace + property, value);
-    
+
     var $body = $('body');
     $body.attr('data-' + property, value);
     $body.removeClass();
 
-    _.each(['mode', 'theme'], function (prop) {
+    _.each(['mode', 'theme'], function(prop) {
       $body.addClass(prop + '-' + $body.attr('data-' + prop));
     });
   }

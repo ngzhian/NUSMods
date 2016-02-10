@@ -14,15 +14,15 @@ module.exports = Marionette.Behavior.extend({
     'click @ui.backToTopButton': 'scrollToTop'
   },
 
-  onShow: function () {
+  onShow: function() {
     var that = this;
-    $(window).scroll(_.debounce(function () {
-      $(that.view.ui.backToTopButton).toggleClass('visible', 
+    $(window).scroll(_.debounce(function() {
+      $(that.view.ui.backToTopButton).toggleClass('visible',
         $(this).scrollTop() > that.options.triggerThreshold);
     }, 50));
   },
 
-  scrollToTop: function () {
+  scrollToTop: function() {
     analytics.track('Misc', 'Back to top', window.location.pathname);
     $('html,body').stop(true, true).animate({scrollTop: 0}, 400);
     $(this.view.ui.backToTopButton).blur();

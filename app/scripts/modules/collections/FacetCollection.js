@@ -7,7 +7,7 @@ var _ = require('underscore');
 module.exports = Backbone.Collection.extend({
   model: Facet,
 
-  initialize: function (models, options) {
+  initialize: function(models, options) {
     this.filteredCollection = options.filteredCollection;
     this.pageSize = options.pageSize;
     this.rawCollection = options.rawCollection;
@@ -15,19 +15,19 @@ module.exports = Backbone.Collection.extend({
     this.on('add', this.onAdd, this);
   },
 
-  onAdd: function (facet) {
+  onAdd: function(facet) {
     facet.get('filters').on('select:all select:none select:some', this.onSelect, this);
   },
 
-  onSelect: function () {
-    var noFiltersSelected = this.all(function (facet) {
+  onSelect: function() {
+    var noFiltersSelected = this.all(function(facet) {
       return _.isEmpty(facet.get('filters').selected);
     });
     this.rawFilteredCollection = noFiltersSelected ?
       this.rawCollection : _.sortBy(_.intersection.apply(this,
-      _.filter(this.map(function (facet) {
+      _.filter(this.map(function(facet) {
         return _.union.apply(this,
-          _.map(facet.get('filters').selected, function (filter) {
+          _.map(facet.get('filters').selected, function(filter) {
             return facet.get('groupedCollection')[filter.get('label')];
           }));
       }), _.size)), 'ModuleCode');
@@ -36,7 +36,7 @@ module.exports = Backbone.Collection.extend({
     this.currentPage = 1;
   },
 
-  addNextPage: function () {
+  addNextPage: function() {
     var start = this.currentPage * this.pageSize;
     var end = start + this.pageSize;
     var slice = this.rawFilteredCollection.slice(start, end);

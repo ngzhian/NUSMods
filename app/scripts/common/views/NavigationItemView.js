@@ -11,7 +11,7 @@ module.exports = Marionette.ItemView.extend({
     'selected deselected': 'toggleActive'
   },
 
-  toggleActive: function () {
+  toggleActive: function() {
     this.$el.toggleClass('active', this.model.selected);
   }
 });

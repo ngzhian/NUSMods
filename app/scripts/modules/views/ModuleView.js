@@ -36,7 +36,7 @@ module.exports = Marionette.LayoutView.extend({
     biddingStatsRegion: '#bidding-stats',
     prerequisitesTreeRegion: '.nm-prerequisites-tree'
   },
-  initialize: function () {
+  initialize: function() {
     if (!window.location.hash) {
       $('html,body').stop(true, true).animate({scrollTop: 0}, 400);
     }
@@ -51,7 +51,7 @@ module.exports = Marionette.LayoutView.extend({
   events: {
     'change #faculty, input:radio[name="student-radios"], #account': 'updatePreferences',
     'click .js-nm-module-nav a': 'scrollToSection',
-    'click .add-timetable': function (event) {
+    'click .add-timetable': function(event) {
       var qtipContent;
       var currentTarget = $(event.currentTarget);
       var semester = currentTarget.data('semester');
@@ -76,7 +76,7 @@ module.exports = Marionette.LayoutView.extend({
       });
       return false;
     },
-    'click .add-bookmark': function (event) {
+    'click .add-bookmark': function(event) {
       analytics.track('Bookmarks', 'Add bookmark', 'From module page');
       App.request('addBookmark', this.model.get('module').ModuleCode);
       $(event.currentTarget).qtip({
@@ -88,7 +88,7 @@ module.exports = Marionette.LayoutView.extend({
       });
     }
   },
-  onShow: function () {
+  onShow: function() {
     /* jshint camelcase: false */
     var module = this.model.get('module');
 
@@ -104,7 +104,7 @@ module.exports = Marionette.LayoutView.extend({
             lockedModules: lockedModules,
             modCode: module.ModuleCode
           })
-      }));
+        }));
     }
 
     this.$('.nm-help').qtip({
@@ -138,7 +138,7 @@ module.exports = Marionette.LayoutView.extend({
     } else {
       DISQUS.reset({
         reload: true,
-        config: function () {
+        config: function() {
           this.page.identifier = code;
           this.page.title = title;
           this.page.url = url;
@@ -146,7 +146,7 @@ module.exports = Marionette.LayoutView.extend({
       });
     }
 
-    (function () {
+    (function() {
       if (typeof disqus_domain !== 'undefined') {
         DISQUSWIDGETS.domain = 'disqus.com';
       }
@@ -156,14 +156,14 @@ module.exports = Marionette.LayoutView.extend({
     var hash = window.location.hash;
     window.location.hash = '';
 
-    setTimeout(function () {
+    setTimeout(function() {
       window.location.hash = hash;
     }, 0);
 
     var that = this;
     var loadedItems = 0;
-    _.each(that.formElements, function (selector, item) {
-      localforage.getItem(preferencesNamespace + item, function (value) {
+    _.each(that.formElements, function(selector, item) {
+      localforage.getItem(preferencesNamespace + item, function(value) {
         if (!value) {
           value = config.defaultPreferences[item];
           localforage.setItem(preferencesNamespace + item, value);
@@ -190,7 +190,7 @@ module.exports = Marionette.LayoutView.extend({
     // Index 0 is "All", therefore index no. = sem no.
     $('.js-nm-ls-schedule-tabs a[data-target="#nm-ls-schedule-sem' + config.semester + '"]').tab('show');
   },
-  updatePreferences: function ($ev) {
+  updatePreferences: function($ev) {
     var $target = $($ev.target);
     $target.blur();
     var property = $target.attr('data-pref-type');
@@ -201,7 +201,7 @@ module.exports = Marionette.LayoutView.extend({
       this.showBiddingStatsRegion(true);
     }
   },
-  showBiddingStatsRegion: function () {
+  showBiddingStatsRegion: function() {
     var biddingStatsDeepCopy = $.extend(true, {},
       this.model.attributes.module.FormattedCorsBiddingStats);
     var biddingStatsModel = new Backbone.Model({stats: biddingStatsDeepCopy});
@@ -216,10 +216,10 @@ module.exports = Marionette.LayoutView.extend({
       this.biddingStatsRegion.show(biddingStatsView);
     }
   },
-  savePreference: function (property, value) {
+  savePreference: function(property, value) {
     if (property === 'faculty' && value === 'default') {
       window.alert('You have to select a faculty.');
-      localforage.getItem(preferencesNamespace + property, function (value) {
+      localforage.getItem(preferencesNamespace + property, function(value) {
         $('#faculty').val(value);
       });
       return false;
@@ -227,12 +227,12 @@ module.exports = Marionette.LayoutView.extend({
     localforage.setItem(preferencesNamespace + property, value);
     return true;
   },
-  scrollToSection: function (event) {
+  scrollToSection: function(event) {
     event.preventDefault();
     var target = $(event.currentTarget).attr('href');
     $('html, body').animate({
       scrollTop: $(target).offset().top - (target === '#details' ? 65 : 0)
-    }, 300, function () {
+    }, 300, function() {
       window.location.hash = target;
     });
   }

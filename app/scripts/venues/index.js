@@ -14,16 +14,16 @@ var navigationItem = App.request('addNavigationItem', {
   url: '/venues'
 });
 
-var loadVenueInformation = function (callback) {
+var loadVenueInformation = function(callback) {
   _Promise.all([
     NUSMods.getVenueInformation(config.semester),
     NUSMods.getVenues(config.semester)
-  ]).then(function (response) {
+  ]).then(function(response) {
     var venues = response[0];
     var venuesList = response[1];
     // TODO: Change key from classes to lessons for venues api
-    _.each(venues, function (value) {
-      _.each(value, function (day) {
+    _.each(venues, function(value) {
+      _.each(value, function(day) {
         if (day.classes) {
           day.lessons = day.classes;
         }
@@ -34,7 +34,7 @@ var loadVenueInformation = function (callback) {
 };
 
 var controller = {
-  showVenueInformation: function (venueName) {
+  showVenueInformation: function(venueName) {
     navigationItem.select();
 
     if (!venueName) {
@@ -42,7 +42,7 @@ var controller = {
       venueName = '';
     }
 
-    loadVenueInformation(function (venues, venuesList) {
+    loadVenueInformation(function(venues, venuesList) {
       var VenueInformationView = require('./views/VenueInformationView');
       var venuesModel = new Backbone.Model({
         selectedVenueName: venueName,
@@ -54,9 +54,9 @@ var controller = {
       App.mainRegion.show(new VenueInformationView({model: venuesModel}));
     });
   },
-  showVenueAvailability: function () {
+  showVenueAvailability: function() {
     navigationItem.select();
-    loadVenueInformation(function (venues, venuesList) {
+    loadVenueInformation(function(venues, venuesList) {
       var VenueAvailabilityView = require('./views/VenueAvailabilityView');
       var venuesModel = new Backbone.Model({
         venues: venues,
@@ -68,7 +68,7 @@ var controller = {
   }
 };
 
-App.addInitializer(function () {
+App.addInitializer(function() {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {

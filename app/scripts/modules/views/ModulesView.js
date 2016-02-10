@@ -38,24 +38,24 @@ module.exports = Marionette.LayoutView.extend({
     }
   },
 
-  initialize: function (options) {
+  initialize: function(options) {
     this.mods = options.mods;
   },
 
   events: {
-    'click .js-nm-clear-filters': function () {
+    'click .js-nm-clear-filters': function() {
       this.facetsView.clearFilters();
     }
   },
 
-  onShow: function () {
-    $('.arrow-down, .arrow-right').click(function () {
+  onShow: function() {
+    $('.arrow-down, .arrow-right').click(function() {
       $(this)
           .toggleClass('arrow-down arrow-right')
           .siblings('ul').toggle();
     });
 
-    function updateAncestors (el, checked) {
+    function updateAncestors(el, checked) {
       var all = true;
       el.siblings().each(function() {
         all = $(this).children('input[type="checkbox"]')
@@ -101,10 +101,10 @@ module.exports = Marionette.LayoutView.extend({
 
     var semesterNames = config.semesterNames;
     var mods = this.mods;
-    _.each(mods, function (mod) {
+    _.each(mods, function(mod) {
       mod.level = mod.ModuleCode[mod.ModuleCode.search(/\d/)] * 1000;
       if (mod.Types) {
-        mod.Types = _.map(mod.Types, function (type) {
+        mod.Types = _.map(mod.Types, function(type) {
           return typeFriendlyName[type] || type;
         });
       } else {
@@ -127,7 +127,7 @@ module.exports = Marionette.LayoutView.extend({
         var workloads = [];
 
         if (mod.Workload) {
-         workloads =  _.map(mod.Workload.split('-'), parseWorkloadHours);
+          workloads =  _.map(mod.Workload.split('-'), parseWorkloadHours);
         }
 
         if (workloads.length === 5) {
@@ -136,8 +136,7 @@ module.exports = Marionette.LayoutView.extend({
           mod.labHours = workloads[2];
           mod.projectHours = workloads[3];
           mod.preparationHours = workloads[4];
-        }
-        else {
+        } else {
           mod.lectureHours = mod.tutorialHours = mod.labHours =
 	      mod.projectHours = mod.preparationHours = 'Others';
         }
@@ -179,7 +178,7 @@ module.exports = Marionette.LayoutView.extend({
       key: 'ModuleCredit',
       label: 'Modular Credits (MCs)',
       slug: 'mcs',
-      sortBy: function (filter) {
+      sortBy: function(filter) {
         return +filter.label;
       }
     });
@@ -229,7 +228,7 @@ module.exports = Marionette.LayoutView.extend({
       }
     });
 
-    _.each([1, 2], function (semester) {
+    _.each([1, 2], function(semester) {
       facets.add(_.map(['Lecture Periods', 'Tutorial Periods'], function(label) {
         var currentLabel = 'Sem ' + semester + ' ' + label;
         return new ArrayFacetModel({
@@ -246,12 +245,12 @@ module.exports = Marionette.LayoutView.extend({
     var that = this;
 
     var moduleFinderNamespace = config.namespaces.moduleFinder + ':';
-    localforage.getItem(moduleFinderNamespace + 'filters', function (selectedFilters) {
+    localforage.getItem(moduleFinderNamespace + 'filters', function(selectedFilters) {
       if (selectedFilters) {
-        _.each(facets.models, function (facet) {
+        _.each(facets.models, function(facet) {
           var filters = selectedFilters[facet.get('label')];
           if (filters && filters.length) {
-            _.each(facet.get('filters').models, function (filter) {
+            _.each(facet.get('filters').models, function(filter) {
               if (filters.indexOf(filter.get('label')) > -1) {
                 filter.select();
               }
@@ -275,7 +274,7 @@ module.exports = Marionette.LayoutView.extend({
         })
       });
 
-      that.listenTo(that.facetsView, 'selectedFiltersChanged', function (selectedFilters) {
+      that.listenTo(that.facetsView, 'selectedFiltersChanged', function(selectedFilters) {
         that.modulesFilterMetaView.updateView(selectedFilters, that.facetsView.collection.rawFilteredCollection.length);
       });
 

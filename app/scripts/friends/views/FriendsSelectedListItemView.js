@@ -10,7 +10,7 @@ module.exports = Marionette.LayoutView.extend({
   events: {
     'click .js-nm-friends-deselect': 'deselectFriend',
   },
-  deselectFriend: function () {
+  deselectFriend: function() {
     var selected = this.model.get('selected');
     this.model.set('selected', !selected);
   }

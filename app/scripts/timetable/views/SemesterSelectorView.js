@@ -11,7 +11,7 @@ module.exports = Marionette.ItemView.extend({
   className: 'pagination pagination-sm',
   template: template,
 
-  initialize: function (options) {
+  initialize: function(options) {
     this.collection = new Backbone.Collection(_.map(_.range(4), function(i) {
       var sem = i + 1;
       return {

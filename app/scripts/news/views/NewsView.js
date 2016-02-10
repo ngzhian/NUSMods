@@ -12,17 +12,17 @@ var newsPagesList = require('../newsPagesList.json');
 require('../../common/utils/notequals');
 
 module.exports = Marionette.LayoutView.extend({
-  initialize: function (data) {
+  initialize: function(data) {
     var that = this;
     this.feedLoadedOnce = false;
     this.model = new Backbone.Model();
     this.model.set('fbPageId', data.fbPageId);
     this.model.set('feedUrl', 'https://nusmods.com/news.php?fbPageId=' + this.model.get('fbPageId'));
     // this.model.set('feedUrl', '/news.php?fbPageId=' + this.model.get('fbPageId'));
-    _.each(newsPagesList, function (item) {
+    _.each(newsPagesList, function(item) {
       item.url = '/news/' + item.id;
       if (item.id === that.model.get('fbPageId')) {
-        that.model.set('activePage', item);  
+        that.model.set('activePage', item);
         item.active = true;
       } else {
         item.active = false;
@@ -34,7 +34,7 @@ module.exports = Marionette.LayoutView.extend({
   regions: {
     feedRegion: '#nm-news-feed-region'
   },
-  onShow: function () {
+  onShow: function() {
     this.feedItemsCollection = new Backbone.Collection();
     this.feedView = new NewsFeedView({collection: this.feedItemsCollection});
     this.feedRegion.show(this.feedView);
@@ -54,12 +54,12 @@ module.exports = Marionette.LayoutView.extend({
   events: {
     'click .js-nm-news-more-posts': 'loadPosts'
   },
-  loadPosts: function () {
+  loadPosts: function() {
     var that = this;
     var MESSAGE_LIMIT = 50;
-    $.get(that.model.get('feedUrl'), function (data) {
+    $.get(that.model.get('feedUrl'), function(data) {
       var feedData = data.data;
-      _.each(feedData, function (item) {
+      _.each(feedData, function(item) {
         if (!!item.message) {
           var words = item.message.split(' ');
           item.message = _.escape(item.message);
@@ -81,11 +81,11 @@ module.exports = Marionette.LayoutView.extend({
                          '/posts/' + item.postId;
 
         if (item.comments) {
-          _.each(item.comments.data, function (comment) {
+          _.each(item.comments.data, function(comment) {
             comment.message = _.escape(comment.message);
             comment.date = moment(comment.created_time).fromNow(); // jshint ignore:line
             if (comment.comments) {
-              _.each(comment.comments.data, function (comment) {
+              _.each(comment.comments.data, function(comment) {
                 comment.message = _.escape(comment.message);
                 comment.date = moment(comment.created_time).fromNow(); // jshint ignore:line
               });

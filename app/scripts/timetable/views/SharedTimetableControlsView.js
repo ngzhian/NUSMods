@@ -10,7 +10,7 @@ module.exports = Marionette.ItemView.extend({
     'click .replace': 'onClickReplace'
   },
 
-  onClickReplace: function () {
+  onClickReplace: function() {
     this.collection.shared = false;
     this.collection.timetable.trigger('change');
     this.destroy();

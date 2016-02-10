@@ -9,11 +9,11 @@ module.exports = Marionette.ItemView.extend({
   template: template,
 
   events: {
-    'click .remove': function (event) {
+    'click .remove': function(event) {
       event.preventDefault();
       App.request('removeModule', this.model.get('Semester'), this.model.id);
     },
-    'click .show-hide': function (event) {
+    'click .show-hide': function(event) {
       event.preventDefault();
       var display = !this.model.get('display');
       this.model.set('display', display);
@@ -25,7 +25,7 @@ module.exports = Marionette.ItemView.extend({
     change: 'render'
   },
 
-  onRender: function () {
+  onRender: function() {
     this.$el.addClass('color' + this.model.get('color'))
       .toggleClass('clash', this.model.get('clash'));
   }

@@ -12,12 +12,12 @@ module.exports = Marionette.ItemView.extend({
     'click .btn': 'onClick'
   },
 
-  onClick: function (event) {
+  onClick: function(event) {
     var label = $(event.currentTarget).text().trim().toLowerCase();
     $('#timetable-wrapper').toggleClass('hide-' + label);
   },
 
-  onShow: function () {
+  onShow: function() {
     this.$('label:last-child').qtip({
       content: 'Only shown if Odd/Even/Irregular',
       position: {

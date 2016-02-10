@@ -19,51 +19,51 @@ module.exports = Marionette.ItemView.extend({
   },
 
   events: {
-    'cut keydown @ui.input': function (event) {
+    'cut keydown @ui.input': function(event) {
       // Prevent default actions on cut and keydown to simulate readOnly
       // behavior on input, as the readOnly attribute does not allow selection
       // on some mobile platforms.
       event.preventDefault();
     },
-    'focus @ui.input': function () {
-      this.getShortURL().then(_.bind(function () {
+    'focus @ui.input': function() {
+      this.getShortURL().then(_.bind(function() {
         // shortURLInput.select() does not work on iOS
         this.ui.input[0].setSelectionRange(0, 99);
       }, this));
     },
-    'mouseup @ui.input': function (event) {
+    'mouseup @ui.input': function(event) {
       // Prevent the mouseup event from unselecting the selection
       event.preventDefault();
     },
-    'mousedown @ui.copyToClipboard': function () {
+    'mousedown @ui.copyToClipboard': function() {
       // Have to get short URL synchronously in order to maintain the
       // temporarily elevated permissions granted by the user's click event:
       // https://github.com/zeroclipboard/zeroclipboard/blob/master/docs/instructions.md#synchronicity-required-during-copy
-      this.getShortURL(true).then(_.bind(function (shortURL) {
+      this.getShortURL(true).then(_.bind(function(shortURL) {
         this.clip.setText(shortURL);
       }, this));
     },
-    'click @ui.shareEmail': function () {
-      this.getShortURL().then(function (shortURL) {
+    'click @ui.shareEmail': function() {
+      this.getShortURL().then(function(shortURL) {
         window.location.href = 'mailto:?subject=My%20NUSMods.com%20Timetable&' +
           'body=' + encodeURIComponent(shortURL);
       });
     },
-    'click @ui.shareFacebook': function () {
-      this.getShortURL().then(function (shortURL) {
+    'click @ui.shareFacebook': function() {
+      this.getShortURL().then(function(shortURL) {
         window.open('http://www.facebook.com/sharer.php?u=' +
           encodeURIComponent(shortURL), '', 'width=660,height=350');
       });
     },
-    'click @ui.shareTwitter': function () {
-      this.getShortURL().then(function (shortURL) {
+    'click @ui.shareTwitter': function() {
+      this.getShortURL().then(function(shortURL) {
         window.open('http://twitter.com/intent/tweet?url=' +
           encodeURIComponent(shortURL), '', 'width=660,height=350');
       });
     }
   },
 
-  getShortURL: function (sync) {
+  getShortURL: function(sync) {
     if (!this.shortUrlPromise ||
       (sync && this.shortUrlPromise.state() !== 'resolved')) {
       var jqxhr = $.ajax('/short_url.php', {
@@ -74,7 +74,7 @@ module.exports = Marionette.ItemView.extend({
         dataType: 'json'
       });
       this.shortUrlPromise = (sync ? $.when(jqxhr.responseJSON) : jqxhr)
-        .then(_.bind(function (data) {
+        .then(_.bind(function(data) {
           this.ui.input.val(data.shorturl);
           return data.shorturl;
         }, this));
@@ -82,25 +82,25 @@ module.exports = Marionette.ItemView.extend({
     return this.shortUrlPromise;
   },
 
-  initialize: function () {
+  initialize: function() {
     ZeroClipboard.config({
       swfPath: '/ZeroClipboard.swf'
     });
   },
 
-  modulesChanged: function () {
+  modulesChanged: function() {
     this.shortUrlPromise = null;
     this.ui.input.val('');
   },
 
-  onShow: function () {
+  onShow: function() {
     this.listenTo(this.collection, 'add remove', this.modulesChanged);
     this.listenTo(this.collection.timetable, 'change', this.modulesChanged);
 
     var ui = this.ui;
 
     this.clip = new ZeroClipboard(ui.copyToClipboard);
-    this.clip.on('aftercopy', function () {
+    this.clip.on('aftercopy', function() {
       ui.copyToClipboard.qtip('option', 'content.text', 'Copied!');
     });
 
@@ -108,14 +108,14 @@ module.exports = Marionette.ItemView.extend({
     ui.copyToClipboard.qtip({
       content: CLIPBOARD_TOOLTIP,
       events: {
-        hidden: function () {
+        hidden: function() {
           // Set to original text when hidden as text may have been changed.
           ui.copyToClipboard.qtip('option', 'content.text', CLIPBOARD_TOOLTIP);
         }
       }
     });
 
-    _.each(['Email', 'Facebook', 'Twitter'], function (medium) {
+    _.each(['Email', 'Facebook', 'Twitter'], function(medium) {
       ui['share' + medium].qtip({content: 'Share via ' + medium});
     });
   }

@@ -17,14 +17,14 @@ module.exports = Marionette.CompositeView.extend({
   childView: ExamView,
   childViewContainer: 'tbody',
   emptyView: EmptyView,
-  template: template, 
+  template: template,
   collectionEvents: {
-    'add remove': function () {
+    'add remove': function() {
       $('#clash').toggleClass('hidden', !this.collection.clashCount);
-      this.updateTotalSemesterModuleCredits(); 
+      this.updateTotalSemesterModuleCredits();
     }
   },
-  onShow: function () {
+  onShow: function() {
     this.updateTotalSemesterModuleCredits();
     this.$('.nm-help').qtip({
       position: {
@@ -33,7 +33,7 @@ module.exports = Marionette.CompositeView.extend({
       }
     });
   },
-  updateTotalSemesterModuleCredits: function () {
+  updateTotalSemesterModuleCredits: function() {
     $('#js-nm-total-mc').text(this.collection.getTotalSemesterModuleCredits());
   },
 });

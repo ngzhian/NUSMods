@@ -17,7 +17,7 @@ var LessonView = Marionette.ItemView.extend({
   tableRow: $(tableRowTemplate()),
 
   modelEvents: {
-    'change:display': function (model, display) {
+    'change:display': function(model, display) {
       if (display) {
         this.attach();
       } else {

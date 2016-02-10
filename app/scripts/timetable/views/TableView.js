@@ -10,7 +10,7 @@ module.exports = Marionette.CompositeView.extend({
   id: 'timetable',
   tagName: 'table',
   childView: LessonView,
-  childViewOptions: function () {
+  childViewOptions: function() {
     return {
       parentView: this,
       timetable: this.collection
@@ -51,9 +51,9 @@ module.exports = Marionette.CompositeView.extend({
     }
   },
 
-  attachBuffer: function () {
+  attachBuffer: function() {
   },
 
-  attachHtml: function () {
+  attachHtml: function() {
   }
 });

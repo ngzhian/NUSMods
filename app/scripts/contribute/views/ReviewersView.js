@@ -18,7 +18,7 @@ var template = require('../templates/reviewers.hbs');
 // });
 
 module.exports = Marionette.LayoutView.extend({
-  initialize: function () {
+  initialize: function() {
     this.model = new Backbone.Model();
     // temporary using developer list lol
     // this.model.set('revsUrl', 'https://api.github.com/repos/NUSModifications/NUSMods/contributors');
@@ -27,7 +27,7 @@ module.exports = Marionette.LayoutView.extend({
   regions: {
     reviewersRegion: '.nm-ct-revs-container'
   },
-  onShow: function () {
+  onShow: function() {
     // this.reviewersCollection = new Backbone.Collection();
     // this.reviewersListView = new ReviewersListView({collection: this.reviewersCollection});
     // var _this = this;

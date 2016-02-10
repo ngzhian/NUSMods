@@ -22,18 +22,18 @@ var DevelopersListView = Marionette.CollectionView.extend({
 var DEVELOPERS_URL = 'https://api.github.com/repos/NUSModifications/NUSMods/contributors';
 
 module.exports = Marionette.LayoutView.extend({
-  initialize: function () {
+  initialize: function() {
     this.model = new Backbone.Model();
   },
   template: template,
   regions: {
     developersRegion: '.nm-ct-devs-container'
   },
-  onShow: function () {
+  onShow: function() {
     this.developersCollection = new Backbone.Collection();
     this.developersListView = new DevelopersListView({collection: this.developersCollection});
     var _this = this;
-    $.get(DEVELOPERS_URL, function (items) {
+    $.get(DEVELOPERS_URL, function(items) {
       _this.developersCollection.add(items);
     });
 

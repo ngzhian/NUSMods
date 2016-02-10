@@ -13,7 +13,7 @@ var navigationItem = App.request('addNavigationItem', {
 });
 
 var controller = {
-  showPreferences: function () {
+  showPreferences: function() {
     var PreferencesView = require('./views/PreferencesView');
     navigationItem.select();
     var preferencesModel = new Backbone.Model({
@@ -24,7 +24,7 @@ var controller = {
   }
 };
 
-App.addInitializer(function () {
+App.addInitializer(function() {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {

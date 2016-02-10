@@ -7,7 +7,7 @@ require('backbone.select');
 module.exports = Backbone.Collection.extend({
   model: NavigationModel,
 
-  initialize: function (models) {
+  initialize: function(models) {
     Backbone.Select.One.applyTo(this, models);
   }
 });

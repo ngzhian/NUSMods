@@ -6,12 +6,12 @@ var Marionette = require('backbone.marionette');
 var team = require('./team.json');
 
 var controller = {
-  showAbout: function () {
+  showAbout: function() {
     var AboutView = require('./views/AboutView');
     App.mainRegion.show(new AboutView());
     App.navigationRegion.currentView.options.collection.deselect();
   },
-  showTeam: function () {
+  showTeam: function() {
     var TeamView = require('./views/TeamView');
     var teamModel = new Backbone.Model({team: team});
     App.mainRegion.show(new TeamView({model: teamModel}));
@@ -19,7 +19,7 @@ var controller = {
   }
 };
 
-App.addInitializer(function () {
+App.addInitializer(function() {
   new Marionette.AppRouter({
     controller: controller,
     appRoutes: {

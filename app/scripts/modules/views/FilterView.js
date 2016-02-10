@@ -9,7 +9,7 @@ module.exports = Marionette.ItemView.extend({
   template: template,
 
   events: {
-    'click :checkbox': function (event) {
+    'click :checkbox': function(event) {
       event.preventDefault();
       this.model.toggleSelected();
       var facet = this.model.get('facet');
@@ -17,7 +17,7 @@ module.exports = Marionette.ItemView.extend({
         (this.model.selected ? 'S' : 'Des') + 'elected ' + facet.get('label'),
         this.model.get('label'), facet.get('filters').selectedLength);
     },
-    'click a': function (event) {
+    'click a': function(event) {
       event.preventDefault();
       var facet = this.model.get('facet');
       var filters = facet.get('filters');

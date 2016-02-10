@@ -10,7 +10,7 @@ var template = require('../templates/module_item.hbs');
 module.exports = Marionette.ItemView.extend({
   className: 'module-item panel panel-default',
   template: template,
-  
+
   behaviors: {
     ModuleHoverBehavior: {
       behaviorClass: ModuleHoverBehavior
@@ -42,7 +42,7 @@ module.exports = Marionette.ItemView.extend({
       });
       return false;
     },
-    'click .add-bookmark': function (event) {
+    'click .add-bookmark': function(event) {
       analytics.track('Bookmarks', 'Add bookmark', 'From module finder');
       App.request('addBookmark', this.model.id);
       $(event.currentTarget).qtip({
@@ -53,7 +53,7 @@ module.exports = Marionette.ItemView.extend({
         }
       });
     },
-    'click a.js-nm-mi-filter': function (event) {
+    'click a.js-nm-mi-filter': function(event) {
       event.preventDefault();
       var currentTarget = $(event.currentTarget);
       var filterType = currentTarget.data('type');

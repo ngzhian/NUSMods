@@ -14,19 +14,19 @@ module.exports = Marionette.LayoutView.extend({
     'click .js-nm-friends-delete': 'deleteFriendTimetable',
     'change .js-nm-friends-select-checkbox': 'toggleFriendSelection'
   },
-  selectFriend: function () {
-    _.each(this.model.collection.models, function (model) {
+  selectFriend: function() {
+    _.each(this.model.collection.models, function(model) {
       model.set('selected', false);
     });
     this.model.set('selected', true);
   },
-  toggleFriendSelection: function (e) {
+  toggleFriendSelection: function(e) {
     e.preventDefault();
     e.stopPropagation();
     var selected = this.model.get('selected');
     this.model.set('selected', !selected);
   },
-  deleteFriendTimetable: function (e) {
+  deleteFriendTimetable: function(e) {
     e.preventDefault();
     e.stopPropagation();
     var choice = window.confirm('Do you really want to delete ' + this.model.get('name') + '\'s timetable?');

@@ -29,7 +29,7 @@ var typeAbbrev = {
 // Common terminology throughout project is to refer to lessons instead of
 // classes, as class is a keyword in JavaScript.
 module.exports = Backbone.Model.extend({
-  initialize: function () {
+  initialize: function() {
     // Duration is in number of half hours.
     this.set('duration', Math.round(((this.get('EndTime') === '0000' ?
       '2400' : this.get('EndTime')) - this.get('StartTime')) / 50));

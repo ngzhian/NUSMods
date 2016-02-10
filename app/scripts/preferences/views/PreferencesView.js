@@ -19,17 +19,17 @@ module.exports = Marionette.LayoutView.extend({
     mode: 'input:radio[name="mode-radios"]',
     theme: '#theme-options'
   },
-  initialize: function () {
+  initialize: function() {
     // TODO: Populate default values of form elements for first time users.
-    _.each(this.ui, function (selector, item) {
-      localforage.getItem(preferencesNamespace + item, function (value) {
+    _.each(this.ui, function(selector, item) {
+      localforage.getItem(preferencesNamespace + item, function(value) {
         if (value) {
           $(selector).val([value]);
         }
       });
     });
 
-    localforage.getItem(ivleNamespace + 'ivleModuleHistory', function (value) {
+    localforage.getItem(ivleNamespace + 'ivleModuleHistory', function(value) {
       if (value) {
         $('#ivle-status-success').removeClass('hidden');
       }
@@ -43,7 +43,7 @@ module.exports = Marionette.LayoutView.extend({
     'keydown': 'toggleTheme',
     'click .connect-ivle': 'connectIvle'
   },
-  connectIvle: function () {
+  connectIvle: function() {
     var that = this;
     if (that.ivleDialog === null || that.ivleDialog.closed) {
       var w = 255,
@@ -55,7 +55,7 @@ module.exports = Marionette.LayoutView.extend({
                     'copyhistory=no, width=' + w + ', height=' + h +
                     ', top=' + top + ', left=' + left;
 
-      window.ivleLoginSuccessful = function (token) {
+      window.ivleLoginSuccessful = function(token) {
         $('#ivle-status-success').addClass('hidden');
         $('#ivle-status-loading').removeClass('hidden');
         localforage.setItem(ivleNamespace + 'ivleToken', token);
@@ -66,12 +66,11 @@ module.exports = Marionette.LayoutView.extend({
       var callbackUrl = window.location.protocol + '//' + window.location.host + '/ivlelogin.html';
       var popUpUrl = 'https://ivle.nus.edu.sg/api/login/?apikey=APILoadTest&url=' + callbackUrl;
       that.ivleDialog = window.open(popUpUrl, '', options);
-    }
-    else {
+    } else {
       that.ivleDialog.focus();
     }
   },
-  fetchModuleHistory: function (ivleToken) {
+  fetchModuleHistory: function(ivleToken) {
     var that = this;
     $.get(
       'https://ivle.nus.edu.sg/api/Lapi.svc/UserID_Get',
@@ -79,7 +78,7 @@ module.exports = Marionette.LayoutView.extend({
         'APIKey': 'APILoadTest',
         'Token': ivleToken
       },
-      function (studentId) {
+      function(studentId) {
         $.get(
           'https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Taken',
           {
@@ -87,32 +86,32 @@ module.exports = Marionette.LayoutView.extend({
             'AuthToken': ivleToken,
             'StudentID': studentId
           },
-          function (data) { that.saveModuleHistory(data); },
+          function(data) { that.saveModuleHistory(data); },
           'jsonp'
         );
       },
       'jsonp'
     );
   },
-  saveModuleHistory: function (moduleHistory) {
+  saveModuleHistory: function(moduleHistory) {
     localforage.setItem(ivleNamespace + 'ivleModuleHistory', moduleHistory.Results);
     $('#ivle-status-success').removeClass('hidden');
     $('#ivle-status-loading').addClass('hidden');
   },
-  randomTheme: function () {
+  randomTheme: function() {
     themePicker.selectRandomTheme();
   },
-  updatePreference: function ($ev) {
+  updatePreference: function($ev) {
     var $target = $($ev.target);
     $target.blur();
     var property = $target.attr('data-pref-type');
     var value = $target.val();
     this.savePreference(property, value);
   },
-  savePreference: function (property, value) {
+  savePreference: function(property, value) {
     if (property === 'faculty' && value === 'default') {
       window.alert('You have to select a faculty.');
-      localforage.getItem(preferencesNamespace + property, function (value) {
+      localforage.getItem(preferencesNamespace + property, function(value) {
         $('#faculty').val(value);
       });
       return;
