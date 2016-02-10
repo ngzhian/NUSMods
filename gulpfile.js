@@ -68,13 +68,13 @@ gulp.task('rsync', function() {
 gulp.task('usemin', ['copy', 'browserify', 'imagemin'], function() {
   return gulp.src('.tmp/index.html')
     .pipe(usemin({
-      css: [ 'concat', minifyCss, rev ],
-      html: [ function() { return minifyHtml({ collapseWhitespace: true });} ],
-      js: [ 'concat', uglify, rev ],
+      css: ['concat', minifyCss, rev],
+      html: [function() { return minifyHtml({collapseWhitespace: true});}],
+      js: ['concat', uglify, rev],
       // don't uglify because jsmin is produced by browserify, which uglifies it
-      jsmain: [ 'concat', rev ],
-      inelinejs: [ uglify ],
-      inlinecss: [ minifyCss, 'concat' ]
+      jsmain: ['concat', rev],
+      inelinejs: [uglify],
+      inlinecss: [minifyCss, 'concat']
     }))
     .on('error', console.error.bind(console))
     .pipe(gulp.dest('dist/'));
@@ -150,7 +150,7 @@ gulp.task('copy:dist', function() {
     'app/vendor/facebook/php-sdk-v4/autoload.php',
     'app/vendor/facebook/php-sdk-v4/src/Facebook/**/*',
     'app/bower_components/font-awesome/fonts/*.*',
-  ], { base: 'app' })
+  ], {base: 'app'})
     .pipe(gulp.dest('dist/'));
 
   var zeroclipboard = gulp.src('node_modules/zeroclipboard/dist/ZeroClipboard.swf')
@@ -160,7 +160,7 @@ gulp.task('copy:dist', function() {
 });
 
 gulp.task('copy:styles', function() {
-  return gulp.src('app/styles/{,*/}*.css', { base: 'app/styles'})
+  return gulp.src('app/styles/{,*/}*.css', {base: 'app/styles'})
     .pipe(gulp.dest('.tmp/styles/'));
 });
 
@@ -171,14 +171,14 @@ gulp.task('copy:tmp', function() {
       'app/bower_components/animate.css/animate.min.css',
       'app/index.html',
       'app/scripts/disqus-count.js'
-    ], { base: 'app' })
+    ], {base: 'app'})
     .pipe(gulp.dest('.tmp/'));
 });
 
 // Compiles Sass to CSS and generates necessary files if requested
 gulp.task('sass', function() {
   var processors = [autoprefixer()];
-  return gulp.src('app/styles/*.scss', { base: 'app/styles'})
+  return gulp.src('app/styles/*.scss', {base: 'app/styles'})
     .pipe(sourcemaps.init())
     .pipe(sass({includePaths: ['app/bower_components']}))
     .pipe(postcss(processors))
@@ -254,31 +254,31 @@ var connectMiddleware = function() {
 
 gulp.task('connect:dist', function() {
   connect.server({
-      'port': 9000,
-      'livereload': false,
-      'hostname': '0.0.0.0',
-      'middleware': connectMiddleware,
-      'root': ['dist', 'api/app']
+    'port': 9000,
+    'livereload': false,
+    'hostname': '0.0.0.0',
+    'middleware': connectMiddleware,
+    'root': ['dist', 'api/app']
   });
 });
 
 gulp.task('connect:livereload', function() {
   connect.server({
-      'port': 9000,
-      'livereload': true,
-      'hostname': '0.0.0.0',
-      'middleware': connectMiddleware,
-      'root': ['.tmp', 'app', '.', 'api/app']
+    'port': 9000,
+    'livereload': true,
+    'hostname': '0.0.0.0',
+    'middleware': connectMiddleware,
+    'root': ['.tmp', 'app', '.', 'api/app']
   });
 });
 
 gulp.task('connect:test', function() {
   connect.server({
-      'port': 9001,
-      'livereload': true,
-      'hostname': '0.0.0.0',
-      'middleware': connectMiddleware,
-      'root': ['.tmp', 'test', 'app', 'api/app']
+    'port': 9001,
+    'livereload': true,
+    'hostname': '0.0.0.0',
+    'middleware': connectMiddleware,
+    'root': ['.tmp', 'test', 'app', 'api/app']
   });
 });
 
