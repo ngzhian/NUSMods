@@ -22,6 +22,7 @@ var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var del = require('del');
 var jshint = require('gulp-jshint');
+var jscs = require('gulp-jscs');
 var stylish = require('jshint-stylish');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
@@ -204,6 +205,18 @@ gulp.task('jshint', function() {
       'test/spec/{,*/}*.js'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
+});
+
+gulp.task('jscs', function() {
+  return gulp.src([
+      'gulpfile.js',
+      'app/scripts/**/*.js',
+      '!app/scripts/vendor/*',
+      'test/spec/{,*/}*.js'])
+    .pipe(jscs())
+    .pipe(jscs.reporter());
+    // uncomment this when we're ready to accept all lint warnings as errors
+    // .pipe(jscs.reporter('fail'));
 });
 
 gulp.task('livereload', function() {
