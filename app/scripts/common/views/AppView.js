@@ -17,7 +17,6 @@ require('bootstrap/alert');
 require('qTip2');
 
 module.exports = Backbone.View.extend({
-  /* jshint maxlen: 140 */
   el: 'body',
 
   events: {
